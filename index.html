@@ -5,211 +5,260 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>D2C Commerce India and NA</title>
 <style>
-
+/* =====================================================================
+   1. DESIGN TOKENS  (the only place colours, fonts and sizes are defined)
+   Light only. White page, soft pastel highlights.
+   ===================================================================== */
 :root{
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
-  --bg:#f7f7f5; --surface:#ffffff; --surface2:#f0f0ec; --text:#1d1d1b; --muted:#6b6b66; --border:#dcdcd5;
-  --accent:#2f5bea; --accent-bg:#e8edfd;
-  --good:#1a7f4b; --good-bg:#e1f4ea; --warn:#9a6b00; --warn-bg:#fbf0d3; --bad:#b3261e; --bad-bg:#fbe4e2; --neutral:#55554f; --neutral-bg:#ebebe6;
   color-scheme:light;
+
+  /* one font for everything: titles, headings, body, buttons, charts */
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --fs-title:22px; --fs-section:16px; --fs-body:14px; --fs-small:12.5px;
+
+  /* neutrals */
+  --bg:#ffffff; --surface:#ffffff; --soft:#f8f9fb; --text:#262b33; --muted:#6b7280; --border:#e6e8ec;
+
+  /* highlight colours. Each has: -bg (soft background), -t (text on that background), -f (soft border), -c (dark chart colour, added below) */
+  --blue-bg:#e9f2fd;   --blue-t:#2b5fae;   --blue-f:#a9c9f0;
+  --orange-bg:#fdefdf; --orange-t:#a45a16; --orange-f:#f5c796;
+  --green-bg:#e7f6ed;  --green-t:#237049;  --green-f:#a8dbbd;
+  --yellow-bg:#fdf5d9; --yellow-t:#86680c; --yellow-f:#f3dc85;
+  --purple-bg:#f1ebfb; --purple-t:#6a4aa8; --purple-f:#cbbcee;
+  --red-bg:#fdecec;    --red-t:#b03a3a;    --red-f:#f2b0b0;
+  --gray-bg:#f0f1f4;   --gray-t:#555b66;   --gray-f:#d3d6dc;
+
+  /* dark chart colours: used for every bar, slice, column and legend swatch */
+  --blue-c:#2f6fd0; --orange-c:#e07b1f; --green-c:#2e9a5f; --yellow-c:#d9a21b; --purple-c:#7b57c4; --red-c:#d24848; --teal-c:#1f8f9b; --pink-c:#c2468f; --gray-c:#7d8591;
+
+  --accent:var(--blue-t); --accent-bg:var(--blue-bg);
+  --radius-lg:12px; --radius-md:10px; --radius-sm:8px; --radius-pill:999px;
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#151514; --surface:#1f1f1d; --surface2:#292926; --text:#ecece8; --muted:#a2a29a; --border:#3a3a36;
-    --accent:#8aa6ff; --accent-bg:#26304f;
-    --good:#6fd39b; --good-bg:#1b3a2a; --warn:#e6bd5b; --warn-bg:#3d3216; --bad:#ff8a80; --bad-bg:#46211e; --neutral:#c4c4bb; --neutral-bg:#33332f;
-    color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#151514; --surface:#1f1f1d; --surface2:#292926; --text:#ecece8; --muted:#a2a29a; --border:#3a3a36;
-  --accent:#8aa6ff; --accent-bg:#26304f;
-  --good:#6fd39b; --good-bg:#1b3a2a; --warn:#e6bd5b; --warn-bg:#3d3216; --bad:#ff8a80; --bad-bg:#46211e; --neutral:#c4c4bb; --neutral-bg:#33332f;
-  color-scheme:dark;
-}
+
+/* =====================================================================
+   2. BASE
+   ===================================================================== */
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+body{margin:0;background:var(--bg);color:var(--text);font:var(--fs-body)/1.45 var(--font)}
+button,input,select{font-family:var(--font);font-size:inherit}
+button{cursor:pointer}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--blue-f);outline-offset:2px}
 .wrap{max-width:1400px;margin:0 auto;padding:16px}
-h1{font-size:20px;margin:0 0 2px;font-weight:650}
-.sub{color:var(--muted);font-size:12.5px;margin-bottom:14px}
+h1,h2,h3{font-family:var(--font);color:var(--text);letter-spacing:0}
+h1{font-size:var(--fs-title);margin:0 0 2px;font-weight:650}
+.sub{color:var(--muted);font-size:var(--fs-small);margin-bottom:14px}
+.muted{color:var(--muted)}
+
+/* =====================================================================
+   3. SWITCHER (region / market / season) AND TABS
+   ===================================================================== */
+.markets{display:flex;gap:8px;margin:2px 0 14px;flex-wrap:wrap}
+.mkt{padding:9px 18px;border-radius:var(--radius-pill);border:1px solid var(--border);background:var(--surface);color:var(--text);font-weight:600}
+.mkt:hover{background:var(--soft)}
+.mkt.active{background:var(--blue-bg);color:var(--blue-t);border-color:var(--blue-f)}
+.pill{display:inline-block;margin-left:8px;padding:0 8px;border-radius:var(--radius-pill);background:var(--gray-bg);color:var(--gray-t);font-size:12px;font-weight:600}
+.mkt.active .pill,.tab.active .pill{background:var(--surface);color:var(--blue-t)}
+.tabs{display:flex;gap:6px;margin:0 0 14px;border-bottom:1px solid var(--border);overflow-x:auto}
+.tab{padding:9px 16px;border:0;border-bottom:3px solid transparent;background:transparent;color:var(--muted);white-space:nowrap;font-weight:550}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--blue-t);border-bottom-color:var(--blue-f)}
+.tab .pill{margin-left:6px;padding:0 7px;font-size:11.5px}
+
+/* =====================================================================
+   4. SEARCH, BUTTONS, FILTER PANEL
+   ===================================================================== */
 .search{display:flex;gap:8px;margin-bottom:10px}
-.search input{flex:1;min-width:0;padding:11px 14px;font-size:15px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text)}
-.search input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
-button{font:inherit;cursor:pointer}
-.btn{padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text)}
-.btn:hover{background:var(--surface2)}
-.btn.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
-.filters{display:none;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;padding:12px;margin-bottom:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px}
+.search input{flex:1;min-width:0;padding:10px 14px;font-size:15px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface);color:var(--text)}
+.btn{padding:9px 14px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface);color:var(--text)}
+.btn:hover{background:var(--soft)}
+.btn.on{background:var(--blue-bg);border-color:var(--blue-f);color:var(--blue-t)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.small{padding:5px 12px;font-size:13px}
+.filters{display:none;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;padding:12px;margin-bottom:10px;background:var(--soft);border:1px solid var(--border);border-radius:var(--radius-lg)}
 .filters.open{display:grid}
-.filters label{display:flex;flex-direction:column;gap:4px;font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-select{padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;text-transform:none;letter-spacing:0;width:100%}
+.filters label{display:flex;flex-direction:column;gap:4px;font-size:var(--fs-small);color:var(--muted)}
+select{padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-size:13.5px;width:100%}
+
+/* =====================================================================
+   5. SUMMARY TILES  (grey = numbers only, coloured = click to filter)
+   ===================================================================== */
 .kpis{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
 .kpi-row{display:flex;flex-wrap:nowrap;gap:8px;align-items:stretch}
 .kpi-row.clicks{overflow-x:auto;padding-bottom:2px}
-.kpi{font:inherit;text-align:left;color:var(--text);border-radius:12px}
+.kpi{font:inherit;text-align:left;color:var(--text);border-radius:var(--radius-lg)}
 .kpi .n{font-size:22px;font-weight:700;line-height:1.1}
 .kpi .l{font-size:12px;color:var(--muted)}
-.kpi.static{flex:1 1 0;min-width:140px;padding:12px 16px;background:var(--text);color:var(--bg);border:1px solid var(--text);cursor:default;user-select:none}
-.kpi.static .n{font-size:30px}
-.kpi.static .l{color:var(--bg);opacity:.75;text-transform:uppercase;letter-spacing:.05em;font-size:11px}
-.kpi.click{flex:1 0 135px;padding:9px 12px 8px;cursor:pointer;border:1px solid var(--kc-bd,var(--border));border-left:5px solid var(--kc,var(--accent));background:var(--kc-bg,var(--surface));transition:transform .08s ease,box-shadow .08s ease}
-.kpi.click .n{color:var(--kc,var(--accent))}
+.kpi.static{flex:1 1 0;min-width:140px;padding:12px 16px;background:var(--soft);border:1px solid var(--border);cursor:default}
+.kpi.static .n{font-size:28px}
+.kpi.click{flex:1 0 150px;padding:9px 12px 8px;cursor:pointer;border:1px solid var(--kc-f);background:var(--kc-bg)}
+.kpi.click .n{color:var(--kc-t)}
 .kpi.click .l{color:var(--text)}
-.kpi.click::after{content:"Click to filter \203A";display:block;margin-top:3px;font-size:10.5px;color:var(--kc,var(--accent));opacity:.85}
-.kpi.click:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.14)}
-.kpi.click:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.kpi.click.active{box-shadow:0 0 0 2px var(--kc,var(--accent))}
+.kpi.click::after{content:"Click to filter \203A";display:block;margin-top:3px;font-size:10.5px;color:var(--kc-t)}
+.kpi.click:hover{filter:brightness(.97)}
+.kpi.click.active{box-shadow:0 0 0 2px var(--kc-f)}
 .kpi.click.active::after{content:"Filter on \00D7 click to clear"}
-.k-growing{--kc:var(--good);--kc-bg:var(--good-bg);--kc-bd:var(--good-bg)}
-.k-stable{--kc:var(--warn);--kc-bg:var(--warn-bg);--kc-bd:var(--warn-bg)}
-.k-struggling{--kc:var(--bad);--kc-bg:var(--bad-bg);--kc-bd:var(--bad-bg)}
-.k-unclear{--kc:var(--neutral);--kc-bg:var(--neutral-bg);--kc-bd:var(--neutral-bg)}
-.k-erp{--kc:var(--accent);--kc-bg:var(--accent-bg);--kc-bd:var(--accent-bg)}
-.k-noerp{--kc:var(--neutral);--kc-bg:var(--surface);--kc-bd:var(--border)}
+.k-Growing{--kc-bg:var(--green-bg);--kc-t:var(--green-t);--kc-f:var(--green-f)}
+.k-Stable{--kc-bg:var(--yellow-bg);--kc-t:var(--yellow-t);--kc-f:var(--yellow-f)}
+.k-Struggling{--kc-bg:var(--red-bg);--kc-t:var(--red-t);--kc-f:var(--red-f)}
+.k-Unclear{--kc-bg:var(--gray-bg);--kc-t:var(--gray-t);--kc-f:var(--gray-f)}
+
+/* =====================================================================
+   6. STATUS LINE, CHIPS, TABLE, BADGES, ROW DETAIL
+   ===================================================================== */
 .status{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;margin:6px 0 8px;color:var(--muted);font-size:13px}
 .status b{color:var(--text)}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;background:var(--accent-bg);color:var(--accent);font-size:12px;border:0}
-.chip:hover{filter:brightness(.95)}
-.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:12px}
-table{border-collapse:collapse;width:100%;min-width:980px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:var(--radius-pill);background:var(--blue-bg);color:var(--blue-t);font-size:12px;border:0}
+.chip:hover{filter:brightness(.96)}
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+table{border-collapse:collapse;width:100%;min-width:900px}
 th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
-th{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:var(--surface2);white-space:nowrap}
+th{font-size:var(--fs-small);font-weight:600;color:var(--muted);background:var(--soft);white-space:nowrap}
+th.sortable{cursor:pointer;user-select:none}
+th.sortable:hover{color:var(--text)}
+th[aria-sort="ascending"]::after{content:" \25B2";font-size:.8em}
+th[aria-sort="descending"]::after{content:" \25BC";font-size:.8em}
 tbody tr.row{cursor:pointer}
-tbody tr.row:hover{background:var(--surface2)}
-tbody tr.row.open{background:var(--accent-bg)}
+tbody tr.row:hover{background:var(--soft)}
+tbody tr.row.open{background:var(--blue-bg)}
 td.num{color:var(--muted);width:48px}
-td.brand{font-weight:600}
-.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:550;white-space:nowrap}
-.b-Growing{background:var(--good-bg);color:var(--good)}
-.b-Stable{background:var(--warn-bg);color:var(--warn)}
-.b-Struggling{background:var(--bad-bg);color:var(--bad)}
-.b-Unclear{background:var(--neutral-bg);color:var(--neutral)}
-.muted{color:var(--muted)}
-tr.detail td{background:var(--surface2);padding:14px 16px}
+td.name{font-weight:600}
+.badge{display:inline-block;padding:2px 9px;border-radius:var(--radius-pill);font-size:12px;font-weight:550;white-space:nowrap}
+.b-Growing{background:var(--green-bg);color:var(--green-t)}
+.b-Stable{background:var(--yellow-bg);color:var(--yellow-t)}
+.b-Struggling{background:var(--red-bg);color:var(--red-t)}
+.b-Unclear{background:var(--gray-bg);color:var(--gray-t)}
+tr.detail td{background:var(--soft);padding:14px 16px}
 dl.d{display:grid;grid-template-columns:minmax(130px,200px) 1fr;gap:6px 16px;margin:0}
-dl.d dt{color:var(--muted);font-size:12.5px}
+dl.d dt{color:var(--muted);font-size:var(--fs-small)}
 dl.d dd{margin:0;overflow-wrap:anywhere}
-a{color:var(--accent)}
 .empty{padding:36px;text-align:center;color:var(--muted)}
-.tabs{display:flex;gap:6px;margin:0 0 14px;border-bottom:1px solid var(--border);overflow-x:auto}
-.tab{font:inherit;padding:9px 16px;border:0;border-bottom:3px solid transparent;background:transparent;color:var(--muted);cursor:pointer;white-space:nowrap;font-weight:550}
-.tab:hover{color:var(--text)}
-.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-.tab .pill{display:inline-block;margin-left:6px;padding:0 7px;border-radius:999px;background:var(--surface2);color:var(--muted);font-size:11.5px;font-weight:600}
-.tab.active .pill{background:var(--accent-bg);color:var(--accent)}
+.pager{display:flex;gap:6px;align-items:center}
+
+/* =====================================================================
+   7. CARDS, NOTICES, PROBLEM, LOADING  (README, Sources, errors)
+   ===================================================================== */
 .doc{display:flex;flex-direction:column;gap:14px;max-width:1100px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
-.card h2{margin:0 0 4px;font-size:16px}
-.card h3{margin:0 0 6px;font-size:14px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px}
+.card h2{margin:0 0 4px;font-size:var(--fs-section);font-weight:650}
 .card p{margin:6px 0}
 .lead{color:var(--muted)}
-.note{margin:10px 0 0;padding:10px 12px;border-radius:10px;background:var(--warn-bg);color:var(--text);border:1px solid var(--border);font-size:13px}
-.gcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;margin-top:12px}
-.gcard{border:1px solid var(--border);border-left:5px solid var(--kc);border-radius:10px;padding:12px 14px;background:var(--kc-bg)}
-.gcard.g-Growing{--kc:var(--good);--kc-bg:var(--good-bg)}
-.gcard.g-Stable{--kc:var(--warn);--kc-bg:var(--warn-bg)}
-.gcard.g-Struggling{--kc:var(--bad);--kc-bg:var(--bad-bg)}
-.gcard.g-Unclear{--kc:var(--neutral);--kc-bg:var(--neutral-bg)}
-.gcard .gh{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:6px}
-.gcard .gt{font-size:16px;font-weight:700;color:var(--kc)}
-.gcard .gn{font-size:12.5px;color:var(--text);opacity:.8}
-.gcard ul{margin:6px 0 8px;padding-left:18px}
-.gcard li{margin:3px 0}
-.gcard .ex{font-size:12.5px;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border)}
-.gcard .ex b{display:block}
-.gcard .ex div{margin:4px 0}
-details{margin-top:8px}
-summary{cursor:pointer;color:var(--accent);font-size:13px}
-.biglist{margin-top:8px;max-height:340px;overflow:auto;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
-.biglist .it{padding:7px 10px;border-bottom:1px solid var(--border);font-size:12.5px}
-.biglist .it:last-child{border-bottom:0}
-.biglist .it b{font-weight:600}
-table.plain{min-width:0;width:100%}
-table.plain td:first-child{white-space:nowrap;font-weight:600}
-.scroll{overflow-x:auto}
+.fine{font-size:var(--fs-small);color:var(--muted);margin:8px 0 0}
 .kv{display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:6px 16px;margin:8px 0 0}
 .kv dt{color:var(--muted)}
 .kv dd{margin:0;overflow-wrap:anywhere}
-.chips2{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.chips2 span{padding:3px 10px;border-radius:999px;background:var(--surface2);font-size:12.5px}
-.chips2 span b{margin-left:4px;color:var(--accent)}
-.tag{display:inline-block;padding:1px 8px;border-radius:999px;background:var(--surface2);color:var(--muted);font-size:11.5px;margin-left:6px;font-weight:500}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
-.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+.notice{margin:0 0 8px;padding:9px 12px;border-radius:var(--radius-md);background:var(--yellow-bg);color:var(--text);border:1px solid var(--yellow-f);font-size:13px}
+.problem{margin:8px 0;padding:14px 16px;border-radius:var(--radius-lg);background:var(--red-bg);border:1px solid var(--red-f);color:var(--text);max-width:760px}
+.problem h3{margin:0 0 6px;font-size:15px;font-weight:650;color:var(--red-t)}
+.problem p{margin:4px 0}
+.loading{padding:18px 4px;color:var(--muted)}
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:10px}
+.sw{border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;font-size:12px;background:var(--surface)}
+.sw .three{display:flex;height:34px}
+.sw .three i{flex:1}
+.sw span{display:block;padding:6px 8px}
+.sw span b{display:block}
+.typeline{display:flex;align-items:baseline;gap:14px;padding:6px 0;border-bottom:1px solid var(--border)}
+.typeline:last-child{border-bottom:0}
+.typeline small{color:var(--muted);min-width:150px;font-size:12px}
+
+/* =====================================================================
+   8. CHARTS  (plain HTML and SVG, no libraries)
+   Rule 0: charts and legends always use the dark -c colours, never the light ones.
+   Rule 1: a chart with one series is always blue.
+   Rule 2: charts with several series use blue, orange, green, yellow, purple, red, teal, pink in that order. "Other" is always grey.
+   Rule 3: status colours never change: Growing green, Stable yellow, Struggling red, Unclear grey.
+   ===================================================================== */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.stat{background:var(--soft);border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px 14px}
 .stat .n{font-size:26px;font-weight:700;line-height:1.1}
 .stat .l{font-size:12px;color:var(--muted);margin-top:2px}
-.two{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:18px;align-items:start}
-@media (max-width:820px){.two{grid-template-columns:1fr}}
-.bars{display:flex;flex-direction:column;gap:5px}
-.brow{display:grid;grid-template-columns:minmax(110px,190px) 1fr auto;gap:10px;align-items:center;padding:3px 6px;border:0;background:transparent;color:var(--text);font:inherit;text-align:left;border-radius:8px;width:100%}
+.two{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:22px;align-items:center}
+.bars{display:flex;flex-direction:column;gap:3px}
+.brow{display:grid;grid-template-columns:minmax(100px,170px) 1fr auto;gap:8px;align-items:center;padding:2px 4px;border:0;background:transparent;color:var(--text);text-align:left;border-radius:var(--radius-sm);width:100%}
 .brow.click{cursor:pointer}
-.brow.click:hover{background:var(--surface2)}
-.bl{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.track{height:16px;background:var(--surface2);border-radius:6px;overflow:hidden;display:flex}
-.fill{height:100%;background:var(--accent);border-radius:6px 0 0 6px;min-width:2px}
-.seg{height:100%}
-.seg.s-Growing{background:var(--good)}
-.seg.s-Stable{background:var(--warn)}
-.seg.s-Struggling{background:var(--bad)}
-.seg.s-Unclear{background:var(--neutral);opacity:.55}
+.brow.click:hover{background:var(--soft)}
+.bl{font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.track{height:14px;background:var(--gray-bg);border-radius:7px;overflow:hidden;display:flex}
+.fill{height:100%;background:var(--blue-c);border-radius:7px 0 0 7px;min-width:2px}
 .bv{font-size:12.5px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
-.donutwrap{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
-svg.donut{width:170px;height:170px;flex:0 0 auto}
-.legend{display:flex;flex-direction:column;gap:5px;font-size:12.5px;min-width:150px}
+.donutcol{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:190px}
+svg.donut{width:130px;height:130px}
+svg.donut circle{cursor:default}
+.legend{display:flex;flex-direction:column;gap:3px;font-size:12.5px;min-width:190px}
 .legend div{display:flex;align-items:center;gap:7px}
 .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;flex:0 0 auto}
 .legend b{margin-left:auto;padding-left:8px;font-variant-numeric:tabular-nums}
 .cols{display:flex;align-items:flex-end;gap:6px;height:170px;padding-top:6px;overflow-x:auto}
 .col{flex:1 0 34px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;font-size:11.5px;color:var(--muted)}
-.col .bar{width:100%;background:var(--accent);border-radius:5px 5px 0 0;min-height:2px}
+.col .bar{width:100%;background:var(--blue-c);border-radius:5px 5px 0 0;min-height:2px}
+.col:hover .bar{filter:brightness(.95)}
 .col .cv{color:var(--text);font-weight:600;margin-bottom:2px}
 .col .cl{margin-top:4px;white-space:nowrap}
-.sublegend{display:flex;flex-wrap:wrap;gap:12px;font-size:12.5px;margin:6px 0 8px}
-.sublegend span{display:inline-flex;align-items:center;gap:6px}
-.sublegend i{width:11px;height:11px;border-radius:3px;display:inline-block}
-.fine{font-size:12.5px;color:var(--muted);margin:8px 0 0}
-.stats{grid-template-columns:repeat(4,minmax(0,1fr))}
-@media (max-width:700px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.two{grid-template-columns:minmax(0,1fr) auto;gap:22px;align-items:center}
-@media (max-width:620px){.two{grid-template-columns:1fr}}
-.brow{grid-template-columns:minmax(100px,170px) 1fr auto;gap:8px;padding:1px 4px}
-.bars{gap:2px}
-.bl{font-size:12px}
-.track{height:12px}
-.track.tall{height:20px}
-.seg{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:650;overflow:hidden}
-.bv{font-size:12px}
-.donutcol{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:190px}
-svg.donut{width:130px;height:130px}
-.legend{font-size:12px;gap:3px;min-width:190px}
-.tip{position:fixed;z-index:50;display:none;background:var(--text);color:var(--bg);padding:6px 10px;border-radius:8px;font-size:12.5px;pointer-events:none;max-width:280px}
-@media (max-width:600px){
-  .kv{grid-template-columns:1fr;gap:0}
-  .kv dt{margin-top:8px}
-}
+
+/* =====================================================================
+   9. HOVER INFORMATION (one tooltip style for the whole site)
+   ===================================================================== */
+.tip{position:fixed;z-index:50;display:none;background:var(--surface);border:1px solid var(--border);box-shadow:0 4px 14px rgba(38,43,51,.12);color:var(--muted);padding:7px 10px;border-radius:var(--radius-sm);font-size:var(--fs-small);pointer-events:none;max-width:280px}
+.tip-h{color:var(--text);font-weight:600}
+
+/* =====================================================================
+   10. PHONES
+   ===================================================================== */
+@media (max-width:700px){ .stats{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:620px){ .two{grid-template-columns:1fr} }
 @media (max-width:600px){
   .wrap{padding:12px}
+  .kv{grid-template-columns:1fr;gap:0}
+  .kv dt{margin-top:8px}
   dl.d{grid-template-columns:1fr;gap:0}
   dl.d dt{margin-top:8px}
 }
 
-.markets{display:flex;gap:8px;margin:2px 0 14px;flex-wrap:wrap}
-.mkt{font:inherit;padding:10px 20px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-weight:650;cursor:pointer}
-.mkt:hover{background:var(--surface2)}
-.mkt.active{background:var(--text);color:var(--bg);border-color:var(--text)}
-.mkt .pill{display:inline-block;margin-left:8px;padding:0 8px;border-radius:999px;background:var(--surface2);color:var(--muted);font-size:12px;font-weight:600}
-.mkt.active .pill{background:var(--bg);color:var(--text)}
+/* =====================================================================
+   11. EXTRA RULES THIS SITE NEEDS (colour variables from the block above only)
+   ===================================================================== */
+.k-erp{--kc-bg:var(--blue-bg);--kc-t:var(--blue-t);--kc-f:var(--blue-f)}
+.k-noerp{--kc-bg:var(--gray-bg);--kc-t:var(--gray-t);--kc-f:var(--gray-f)}
+.note{margin:10px 0 0;padding:10px 12px;border-radius:var(--radius-md);background:var(--yellow-bg);border:1px solid var(--yellow-f);font-size:var(--fs-small)}
+.card ul{margin:6px 0;padding-left:18px}
+.gcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;margin-top:12px}
+.gcard{border:1px solid var(--kc-f);border-radius:var(--radius-md);padding:12px 14px;background:var(--kc-bg)}
+.gcard.g-Growing{--kc-bg:var(--green-bg);--kc-t:var(--green-t);--kc-f:var(--green-f)}
+.gcard.g-Stable{--kc-bg:var(--yellow-bg);--kc-t:var(--yellow-t);--kc-f:var(--yellow-f)}
+.gcard.g-Struggling{--kc-bg:var(--red-bg);--kc-t:var(--red-t);--kc-f:var(--red-f)}
+.gcard.g-Unclear{--kc-bg:var(--gray-bg);--kc-t:var(--gray-t);--kc-f:var(--gray-f)}
+.gcard .gh{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:6px}
+.gcard .gt{font-size:var(--fs-section);font-weight:700;color:var(--kc-t)}
+.gcard .gn{font-size:var(--fs-small);color:var(--text)}
+.gcard li{margin:3px 0}
+.gcard .ex{font-size:var(--fs-small);margin-top:8px;padding-top:8px;border-top:1px dashed var(--kc-f)}
+.gcard .ex b{display:block}
+.gcard .ex div{margin:4px 0}
+details{margin-top:8px}
+summary{cursor:pointer;color:var(--accent);font-size:13px}
+.biglist{margin-top:8px;max-height:340px;overflow:auto;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface)}
+.biglist .it{padding:7px 10px;border-bottom:1px solid var(--border);font-size:var(--fs-small)}
+.biglist .it:last-child{border-bottom:0}
+table.plain{min-width:0;width:100%}
+table.plain td:first-child{white-space:nowrap;font-weight:600}
 td.wrapcell{min-width:260px}
-
-.problem{margin:16px 0;padding:18px 20px;border-radius:12px;background:var(--bad-bg);border:1px solid var(--bad);color:var(--text);max-width:760px}
-.problem h2{margin:0 0 8px;font-size:17px;color:var(--bad)}
-.problem p{margin:6px 0}
-.notice{margin:0 0 8px;padding:9px 12px;border-radius:10px;background:var(--warn-bg);border:1px solid var(--border);font-size:13px}
-#loading{padding:30px 4px;color:var(--muted)}
+.scroll{overflow-x:auto}
+.chips2{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chips2 span{padding:3px 10px;border-radius:var(--radius-pill);background:var(--gray-bg);color:var(--gray-t);font-size:var(--fs-small)}
+.chips2 span b{margin-left:6px;color:var(--blue-t)}
+.sublegend{display:flex;flex-wrap:wrap;gap:12px;font-size:var(--fs-small);margin:6px 0 8px}
+.sublegend span{display:inline-flex;align-items:center;gap:6px}
+.sublegend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.track.tall{height:20px}
+.seg{display:flex;align-items:center;justify-content:center;font-size:var(--fs-small);font-weight:650;overflow:hidden}
+@media (max-width:600px){ .kpi.static{min-width:0;padding:10px 12px} .kpi.static .n{font-size:24px} }
+svg.donut text{pointer-events:none}
 
 </style>
 </head>
@@ -217,13 +266,14 @@ td.wrapcell{min-width:260px}
 <div class="wrap" id="app">
   <h1 id="page-title">D2C Commerce India and NA</h1>
   <div class="sub" id="page-sub"></div>
-  <div id="loading">Loading data…</div>
-  <noscript><div class="problem"><h2>JavaScript is turned off</h2><p>This page needs JavaScript to show the data. Turn it on in your browser settings and reload.</p></div></noscript>
+  <div class="loading" id="loading">Loading data…</div>
+  <noscript><div class="problem"><h3>JavaScript is turned off</h3><p>This page needs JavaScript to show the data. Turn it on in your browser settings and reload.</p></div></noscript>
   <div class="problem" id="problem" hidden></div>
   <div id="notices" hidden></div>
   <div class="markets" role="tablist" id="markets"></div>
 </div>
 <script>
+
 /* =====================================================================
    SETTINGS: the words and file names you may want to change later.
    Everything else on this page is read from the CSV data files.
@@ -261,7 +311,7 @@ function h(tag, attrs){
 function safeUrl(u){ return /^https?:\/\//i.test(u) ? u : null; }
 function aLink(url,label){
   const u=safeUrl(url);
-  return u ? h('a',{href:u,target:'_blank',rel:'noopener noreferrer',text:label||url}) : document.createTextNode(label||url);
+  return u ? h('a',{href:u,target:'_blank',rel:'noopener noreferrer',text:label||url,'data-tip':'Opens in a new tab'}) : document.createTextNode(label||url);
 }
 function host(u){ try{ return new URL(u).hostname.replace(/^www\./,''); }catch(e){ return ''; } }
 function section(title, intro){
@@ -272,20 +322,22 @@ function section(title, intro){
 }
 function erpTokens(v){ return v.split(';').map(s=>s.trim()).filter(Boolean); }
 const pct=(n,t)=>(t?(n*100/t):0).toFixed(1)+'%';
-const PALETTE=['#2f5bea','#e8710a','#1a9e6b','#c2368c','#8a5cf6','#d4a017','#0e9aa7','#d6453d'];
-const OTHER_COLOR='#8b8b84';
+const PALETTE=['var(--blue-c)','var(--orange-c)','var(--green-c)','var(--yellow-c)','var(--purple-c)','var(--red-c)','var(--teal-c)','var(--pink-c)'];   // order for charts with several series
+const OTHER_COLOR='var(--gray-c)';
+const STATUS_C={Growing:'var(--green-c)',Stable:'var(--yellow-c)',Struggling:'var(--red-c)',Unclear:'var(--gray-c)'};   // status colours never change
+const PAGE_SIZE=25;
 const SVGNS='http://www.w3.org/2000/svg';
 function svgEl(tag,attrs){ const e=document.createElementNS(SVGNS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); return e; }
 function donut(items,total,topText,bottomText){
   const svg=svgEl('svg',{viewBox:'0 0 120 120','class':'donut',role:'img','aria-label':topText+' '+bottomText});
   const r=44, C=2*Math.PI*r; let off=0;
-  const bg=svgEl('circle',{cx:60,cy:60,r:r,fill:'none','stroke-width':20}); bg.style.stroke='var(--surface2)'; svg.append(bg);
+  const bg=svgEl('circle',{cx:60,cy:60,r:r,fill:'none','stroke-width':20}); bg.style.stroke='var(--gray-bg)'; svg.append(bg);
   items.forEach(it=>{
     if(!it.value) return;
     const len=C*it.value/total;
     const c=svgEl('circle',{cx:60,cy:60,r:r,fill:'none','stroke-width':20,'stroke-dasharray':len+' '+(C-len),'stroke-dashoffset':-off,transform:'rotate(-90 60 60)'});
     c.style.stroke=it.color;
-    const t=svgEl('title',{}); t.textContent=`${it.label}: ${it.value} (${pct(it.value,total)})`; c.append(t);
+    c.setAttribute('data-tip',`${it.label}|${it.value} brands|${pct(it.value,total)} of ${total} brands`);
     svg.append(c); off+=len;
   });
   const t1=svgEl('text',{x:60,y:58,'text-anchor':'middle','font-size':18,'font-weight':700}); t1.style.fill='var(--text)'; t1.textContent=topText;
@@ -297,7 +349,7 @@ function legend(items,total){
   const box=h('div',{class:'legend'});
   items.forEach(it=>{
     const sw=h('i'); sw.style.background=it.color;
-    box.append(h('div',null,sw,h('span',{text:it.label}),h('b',{text:`${it.value} · ${pct(it.value,total)}`})));
+    box.append(h('div',{'data-tip':`${it.label}|${it.value} brands|${pct(it.value,total)} of ${total} brands`},sw,h('span',{text:it.label}),h('b',{text:`${it.value} · ${pct(it.value,total)}`})));
   });
   return box;
 }
@@ -305,7 +357,7 @@ function bars(entries,total,onClick){
   const max=Math.max(1,...entries.map(e=>e[1]));
   const wrap=h('div',{class:'bars'});
   entries.forEach(([label,val])=>{
-    const row=h(onClick?'button':'div',{class:'brow'+(onClick?' click':''),'data-tip':`${label}: ${val} (${pct(val,total)})`});
+    const row=h(onClick?'button':'div',{class:'brow'+(onClick?' click':''),'data-tip':`${label}|${val} brands|${pct(val,total)} of ${total} brands`});
     if(onClick){ row.type='button'; row.addEventListener('click',()=>onClick(label)); }
     const fill=h('div',{class:'fill'}); fill.style.width=(val/max*100)+'%';
     row.append(h('span',{class:'bl',text:label,title:label}),h('div',{class:'track'},fill),h('span',{class:'bv',text:`${val} · ${pct(val,total)}`}));
@@ -334,7 +386,6 @@ function marketTemplate(M){
     <div class="search">
       <input data-id="q" type="search" placeholder="Search by brand, category, sub-category, city…" autocomplete="off" aria-label="Search brands">
       <button class="btn" data-id="toggleFilters" aria-expanded="false">Filters</button>
-      <button class="btn" data-id="reset">Reset</button>
     </div>
     <div class="filters" data-id="filters">
       <label>Category<select data-id="f-cat"></select></label>
@@ -351,7 +402,11 @@ function marketTemplate(M){
       </select></label>
     </div>
     <div class="kpis" data-id="kpis"></div>
-    <div class="status"><div data-id="count"></div><div class="chips" data-id="chips"></div></div>
+    <div class="status">
+      <div data-id="count"></div>
+      <div class="chips" data-id="chips"></div>
+      <div class="pager"><button class="btn small" data-id="prev" type="button">Previous</button><span data-id="pageinfo"></span><button class="btn small" data-id="next" type="button">Next</button></div>
+    </div>
     <div class="tablewrap">
       <table><thead data-id="thead"></thead><tbody data-id="tbody"></tbody></table>
       <div class="empty" data-id="empty" hidden>No brands match the current search and filters.</div>
@@ -377,7 +432,9 @@ function createMarket(M){
   const uniq=name=>countMap(r=>r[I[name]]);
   const withErpN=ROWS.filter(r=>col(r,'ERP signals')!==NO_ERP && col(r,'ERP signals')!=='').length;
   const hasErp=withErpN>0;
-  const state={q:'',cat:'',growth:'',erp:'',city:'',hc:'',src:'',sort:'sno'};
+  const state={q:'',cat:'',growth:'',erp:'',city:'',hc:'',src:'',sort:'sno',sortCol:'',sortDir:'asc',page:1};
+  let matchEl=h('span');
+  function refresh(){ state.page=1; renderTable(); }
 
   /* ===== Brands tab ===== */
   function fillSelect(sel, items, anyLabel){
@@ -429,14 +486,28 @@ function createMarket(M){
     return true;
   }
   function sortRows(list){
-    const s=state.sort, out=list.slice(), B=r=>r[I['Brand']], C=r=>r[I['Category']];
+    const out=list.slice(), B=r=>r[I['Brand']], C=r=>r[I['Category']];
+    if(state.sortCol){
+      const cn=state.sortCol, dir=state.sortDir==='asc'?1:-1, numeric=(cn==='S.No'||cn==='Founded year');
+      out.sort((a,b)=>{
+        const x=a[I[cn]], y=b[I[cn]];
+        if(x===''&&y==='') return 0; if(x==='') return 1; if(y==='') return -1;      // blanks always last
+        let c;
+        if(numeric) c=Number(x)-Number(y);
+        else if(cn==='Growth signal') c=GROWTH_ORDER.indexOf(x)-GROWTH_ORDER.indexOf(y);
+        else c=x.localeCompare(y);
+        return (c*dir)||B(a).localeCompare(B(b));
+      });
+      return out;
+    }
+    const s=state.sort;
     if(s==='brand') out.sort((a,b)=>B(a).localeCompare(B(b)));
     else if(s==='cat') out.sort((a,b)=>C(a).localeCompare(C(b))||B(a).localeCompare(B(b)));
     else if(s==='founded') out.sort((a,b)=>{ const x=a[I['Founded year']], y=b[I['Founded year']]; if(x===''&&y==='') return 0; if(x==='') return 1; if(y==='') return -1; return Number(x)-Number(y); });
     else out.sort((a,b)=>Number(a[I['S.No']])-Number(b[I['S.No']]));
     return out;
   }
-  const TCOLS=[['S.No','S.No','num'],['Brand','Brand','brand'],['Category','Category'],['Sub-category','Sub-category'],['HQ city','HQ city'],['Founded year','Founded'],['Headcount (approx)','Headcount'],['Growth signal','Growth'],['ERP signals','ERP signals']].filter(c=>hasErp||c[0]!=='ERP signals');
+  const TCOLS=[['S.No','S.No','num'],['Brand','Brand','name'],['Category','Category'],['Sub-category','Sub-category'],['HQ city','HQ city'],['Founded year','Founded'],['Headcount (approx)','Headcount'],['Growth signal','Growth'],['ERP signals','ERP signals']].filter(c=>hasErp||c[0]!=='ERP signals');
   function td(text,cls){
     const c=h('td',cls?{class:cls}:null);
     if(text===''){ c.append(h('span',{class:'muted',text:'—'})); } else c.textContent=text;
@@ -455,14 +526,22 @@ function createMarket(M){
     return h('tr',{class:'detail'},c);
   }
   function renderTable(){
+    hideTip();
     const list=sortRows(ROWS.filter(matches));
+    const pages=Math.max(1,Math.ceil(list.length/PAGE_SIZE));
+    if(state.page>pages) state.page=pages;
+    if(state.page<1) state.page=1;
+    const start=(state.page-1)*PAGE_SIZE, slice=list.slice(start,start+PAGE_SIZE);
     const tb=$('tbody'); tb.textContent='';
     const frag=document.createDocumentFragment();
-    list.forEach(r=>{
+    slice.forEach(r=>{
       const tr=h('tr',{class:'row'});
       TCOLS.forEach(([name,,cls])=>{
-        if(name==='Growth signal'){ const g=h('td'); g.append(h('span',{class:'badge b-'+gcls(r[I[name]]),text:r[I[name]]})); tr.append(g); }
-        else tr.append(td(r[I[name]],cls));
+        if(name==='Growth signal'){
+          const v=r[I[name]]; const g=h('td');
+          g.append(h('span',{class:'badge b-'+gcls(v),text:v,'data-tip':`${v}|Growth signal copied from the sheet|The evidence is the Signal reason in the same row`}));
+          tr.append(g);
+        } else tr.append(td(r[I[name]],cls));
       });
       tr.addEventListener('click',()=>{
         const next=tr.nextSibling;
@@ -473,37 +552,53 @@ function createMarket(M){
     });
     tb.append(frag);
     $('empty').hidden=list.length>0;
-    const cnt=$('count'); cnt.textContent=''; cnt.append('Showing ',h('b',{text:String(list.length)}),` of ${N} brands`);
+    const cnt=$('count'); cnt.textContent='';
+    if(list.length) cnt.append('Showing ',h('b',{text:`${start+1}–${start+slice.length}`}),' of ',h('b',{text:String(list.length)}),' brands');
+    else cnt.append('Showing ',h('b',{text:'0'}),` of ${N} brands`);
+    $('pageinfo').textContent=`Page ${state.page} of ${pages}`;
+    $('prev').disabled=state.page<=1; $('next').disabled=state.page>=pages;
+    matchEl.textContent=String(list.length);
+    root.querySelectorAll('thead th').forEach(th=>{
+      if(th.dataset.col===state.sortCol) th.setAttribute('aria-sort',state.sortDir==='asc'?'ascending':'descending'); else th.removeAttribute('aria-sort');
+    });
     renderChips(); renderKpiActive();
   }
   function renderChips(){
     const box=$('chips'); box.textContent='';
+    let any=false;
     [['q','Search'],['cat','Category'],['growth','Growth'],['erp','ERP'],['city','City'],['hc','Headcount'],['src','Source']].forEach(([k,label])=>{
       if(!state[k]) return;
+      any=true;
       let val=state[k]; if(val===BLANK) val='(blank)'; if(val==='__any__') val='Any ERP signal'; if(val==='__none__') val=NO_ERP;
       const b=h('button',{class:'chip',type:'button',text:`${label}: ${val} ×`});
-      b.addEventListener('click',()=>{ state[k]=''; syncControls(); renderTable(); });
+      b.addEventListener('click',()=>{ state[k]=''; syncControls(); refresh(); });
       box.append(b);
     });
+    if(any){
+      const c=h('button',{class:'btn small',type:'button',text:'Clear all'});
+      c.addEventListener('click',()=>{ Object.assign(state,{q:'',cat:'',growth:'',erp:'',city:'',hc:'',src:''}); syncControls(); refresh(); });
+      box.append(c);
+    }
   }
   function buildKpis(){
     const box=$('kpis'); box.textContent='';
     const rowStatic=h('div',{class:'kpi-row'}), rowClick=h('div',{class:'kpi-row clicks'}); box.append(rowStatic,rowClick);
     const gc=uniq('Growth signal');
     const items=[
-      {n:N,l:'Total brands'},
-      {n:uniq('Category').size,l:'Categories'},
-      {n:gc.get('Growing')||0,l:'Growing',k:'growth',v:'Growing',c:'k-growing'},
-      {n:gc.get('Stable')||0,l:'Stable',k:'growth',v:'Stable',c:'k-stable'},
-      {n:gc.get('Struggling')||0,l:'Struggling',k:'growth',v:'Struggling',c:'k-struggling'},
-      {n:gc.get('Unclear')||0,l:'Growth unclear',k:'growth',v:'Unclear',c:'k-unclear'}
+      {n:N,l:'Total brands',tip:'Total brands|All the brands in this list'},
+      {n:N,l:'Matching now',tip:'Matching now|Brands that match the current search and filters',match:true},
+      {n:uniq('Category').size,l:'Categories',tip:'Categories|Different categories in this list'}
     ];
-    if(hasErp){ items.push({n:withErpN,l:'With ERP signal',k:'erp',v:'__any__',c:'k-erp'},{n:N-withErpN,l:'No ERP signal found',k:'erp',v:'__none__',c:'k-noerp'}); }
+    GROWTH_ORDER.forEach(g=>items.push({n:gc.get(g)||0,l:g==='Unclear'?'Growth unclear':g,k:'growth',v:g,c:'k-'+g}));
+    if(hasErp) items.push({n:withErpN,l:'Has an ERP signal',k:'erp',v:'__any__',c:'k-erp'},{n:N-withErpN,l:NO_ERP,k:'erp',v:'__none__',c:'k-noerp'});
     items.forEach(it=>{
-      const el=h(it.k?'button':'div',{class:'kpi '+(it.k?'click '+it.c:'static')});
+      const tip=it.tip||`${it.l}|${it.n} of ${N} brands (${pct(it.n,N)})|Click to filter the list`;
+      const el=h(it.k?'button':'div',{class:'kpi '+(it.k?'click '+it.c:'static'),'data-tip':tip});
       if(it.k){ el.type='button'; el.dataset.k=it.k; el.dataset.v=it.v; }
-      el.append(h('div',{class:'n',text:String(it.n)}),h('div',{class:'l',text:it.l}));
-      if(it.k) el.addEventListener('click',()=>{ state[it.k]=state[it.k]===it.v?'':it.v; syncControls(); renderTable(); });
+      const n=h('div',{class:'n',text:String(it.n)});
+      if(it.match) matchEl=n;
+      el.append(n,h('div',{class:'l',text:it.l}));
+      if(it.k) el.addEventListener('click',()=>{ state[it.k]=state[it.k]===it.v?'':it.v; syncControls(); refresh(); });
       (it.k?rowClick:rowStatic).append(el);
     });
   }
@@ -513,36 +608,48 @@ function createMarket(M){
     $('f-city').value=state.city; $('f-hc').value=state.hc; $('f-src').value=state.src; $('f-sort').value=state.sort;
   }
   function initBrands(){
-    const tr=h('tr'); TCOLS.forEach(c=>tr.append(h('th',{text:c[1]}))); $('thead').append(tr);
+    const tr=h('tr');
+    const guide=new Map(columnGuide().map(r=>[r[0],r[1]]));
+    TCOLS.forEach(([name,label])=>{
+      const th=h('th',{class:'sortable',text:label,'data-col':name,'data-tip':`${label}|${String(guide.get(name)||'').replace(/\|/g,'/')}|Click to sort`});
+      th.addEventListener('click',()=>{
+        if(state.sortCol===name) state.sortDir=state.sortDir==='asc'?'desc':'asc'; else { state.sortCol=name; state.sortDir='asc'; }
+        refresh();
+      });
+      tr.append(th);
+    });
+    $('thead').append(tr);
     buildFilters(); buildKpis();
     let t;
-    $('q').addEventListener('input',e=>{ clearTimeout(t); t=setTimeout(()=>{ state.q=e.target.value.trim(); renderTable(); },120); });
+    $('q').addEventListener('input',e=>{ clearTimeout(t); t=setTimeout(()=>{ state.q=e.target.value.trim(); refresh(); },120); });
     [['f-cat','cat'],['f-growth','growth'],['f-erp','erp'],['f-city','city'],['f-hc','hc'],['f-src','src'],['f-sort','sort']].forEach(([id,k])=>{
-      $(id).addEventListener('change',e=>{ state[k]=e.target.value; renderTable(); });
+      $(id).addEventListener('change',e=>{ state[k]=e.target.value; if(k==='sort') state.sortCol=''; refresh(); });
     });
     $('toggleFilters').addEventListener('click',e=>{ const open=$('filters').classList.toggle('open'); e.currentTarget.classList.toggle('on',open); e.currentTarget.setAttribute('aria-expanded',String(open)); });
-    $('reset').addEventListener('click',()=>{ Object.assign(state,{q:'',cat:'',growth:'',erp:'',city:'',hc:'',src:'',sort:'sno'}); syncControls(); renderTable(); });
+    $('prev').addEventListener('click',()=>{ state.page--; renderTable(); });
+    $('next').addEventListener('click',()=>{ state.page++; renderTable(); });
     $('pill-brands').textContent=String(N);
     renderTable();
   }
   function jumpToCategory(cat){
     Object.assign(state,{q:'',cat:cat,growth:'',erp:'',city:'',hc:'',src:''});
-    syncControls(); renderTable(); show('brands',true);
+    syncControls(); refresh(); show('brands',true);
   }
 
   /* ===== Analytics (India only) ===== */
   function buildAnalytics(){
+    hideTip();
     const rootA=$('view-analytics'); rootA.textContent='';
     const doc=h('div',{class:'doc'});
     const cats=[...countMap(r=>col(r,'Category')).entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
-    const GCOL={Growing:'#1a9e6b',Stable:'#d4a017',Struggling:'#d6453d',Unclear:'#8b8b84'};
-    const GTXT={Growing:'#ffffff',Stable:'#1d1d1b',Struggling:'#ffffff',Unclear:'#ffffff'};
+    const GCOL=STATUS_C;
+    const GTXT={Growing:'var(--surface)',Stable:'var(--text)',Struggling:'var(--surface)',Unclear:'var(--surface)'};
     const withSignal=ROWS.filter(r=>col(r,'Growth signal')!=='Unclear').length;
     doc.append(h('div',{class:'stats'},
-      h('div',{class:'stat'},h('div',{class:'n',text:String(N)}),h('div',{class:'l',text:'Total brands'})),
-      h('div',{class:'stat'},h('div',{class:'n',text:String(cats.length)}),h('div',{class:'l',text:'Categories'})),
-      h('div',{class:'stat'},h('div',{class:'n',text:String(cats[0][1])}),h('div',{class:'l',text:`Largest category: ${cats[0][0]}`})),
-      h('div',{class:'stat'},h('div',{class:'n',text:String(withSignal)}),h('div',{class:'l',text:'Brands with a Growing, Stable or Struggling signal'}))
+      h('div',{class:'stat','data-tip':'Total brands|All the brands in this list'},h('div',{class:'n',text:String(N)}),h('div',{class:'l',text:'Total brands'})),
+      h('div',{class:'stat','data-tip':'Categories|Different categories in this list'},h('div',{class:'n',text:String(cats.length)}),h('div',{class:'l',text:'Categories'})),
+      h('div',{class:'stat','data-tip':`Largest category|${cats[0][0]}|${cats[0][1]} brands (${pct(cats[0][1],N)} of the list)`},h('div',{class:'n',text:String(cats[0][1])}),h('div',{class:'l',text:`Largest category: ${cats[0][0]}`})),
+      h('div',{class:'stat','data-tip':`Brands with a signal|${withSignal} brands (${pct(withSignal,N)} of the list)|Growing, Stable or Struggling`},h('div',{class:'n',text:String(withSignal)}),h('div',{class:'l',text:'Brands with a Growing, Stable or Struggling signal'}))
     ));
 
     const s1=section('Brands per category','Number of brands in each category. Click a bar to see those brands.');
@@ -560,7 +667,7 @@ function createMarket(M){
 
     const s2=section('Growth signal by category','Each bar is one category, scaled to 100% and split by the Growth signal. The number inside a coloured block is a brand count, and hovering a block shows the details. The number at the right is the category’s total brands.');
     const sl=h('div',{class:'sublegend'});
-    GROWTH_ORDER.forEach(g=>{ const i=h('i'); i.style.background=GCOL[g]; sl.append(h('span',null,i,g)); });
+    GROWTH_ORDER.forEach(g=>{ const i=h('i'); i.style.background=GCOL[g]; sl.append(h('span',{'data-tip':`${g}|Growth signal copied from the sheet|The evidence is the Signal reason in the same row`},i,g)); });
     s2.append(sl);
     const wrap2=h('div',{class:'bars'});
     cats.forEach(([c,n])=>{
@@ -570,7 +677,7 @@ function createMarket(M){
       const track=h('div',{class:'track tall'});
       GROWTH_ORDER.forEach(g=>{
         const k=rs.filter(r=>col(r,'Growth signal')===g).length; if(!k) return;
-        const seg=h('div',{class:'seg','data-tip':`${c} · ${g}: ${k} of ${n} brands (${pct(k,n)})`});
+        const seg=h('div',{class:'seg','data-tip':`${c} · ${g}|${k} of ${n} brands|${pct(k,n)} of this category`});
         seg.style.width=(k/n*100)+'%'; seg.style.background=GCOL[g]; seg.style.color=GTXT[g];
         if(k/n>=0.07) seg.textContent=String(k);
         track.append(seg);
@@ -599,7 +706,7 @@ function createMarket(M){
     const maxBin=Math.max(1,...bins.map(b=>b[1]));
     const s4=section('Founded year',`Brands by founding year, for the ${years.length} brands that have a founded year in the sheet.`);
     const colsBox=h('div',{class:'cols'});
-    bins.forEach(([l,v])=>{ const bar=h('div',{class:'bar','data-tip':`${l}: ${v} brands`}); bar.style.height=(v/maxBin*100*0.8)+'%'; colsBox.append(h('div',{class:'col'},h('span',{class:'cv',text:String(v)}),bar,h('span',{class:'cl',text:l}))); });
+    bins.forEach(([l,v])=>{ const bar=h('div',{class:'bar'}); bar.style.height=(v/maxBin*100*0.8)+'%'; colsBox.append(h('div',{class:'col','data-tip':`${l}|${v} brands|${pct(v,years.length)} of ${years.length} brands with a founded year`},h('span',{class:'cv',text:String(v)}),bar,h('span',{class:'cl',text:l}))); });
     s4.append(colsBox);
     s4.append(h('p',{class:'fine',text:`${N-years.length} brands have no founded year in the sheet and are not included here.`}));
     doc.append(s4);
@@ -617,17 +724,34 @@ function createMarket(M){
 
     doc.append(h('p',{class:'fine',text:'Every number on this tab is counted directly from the Brands tab of the sheet. Percentages are rounded to one decimal place.'}));
     rootA.append(doc);
-    const tip=document.getElementById('tip');
-    function place(e){
-      const t=e.target.closest&&e.target.closest('[data-tip]');
-      if(!t){ tip.style.display='none'; return; }
-      tip.textContent=t.getAttribute('data-tip'); tip.style.display='block';
-      const x=Math.min(e.clientX+14,window.innerWidth-tip.offsetWidth-8);
-      tip.style.left=Math.max(8,x)+'px'; tip.style.top=(e.clientY+16)+'px';
-    }
-    rootA.addEventListener('mouseover',place); rootA.addEventListener('mousemove',place);
-    rootA.addEventListener('mouseleave',()=>{ tip.style.display='none'; });
-    rootA.addEventListener('click',e=>{ place(e); setTimeout(()=>{ tip.style.display='none'; },1600); });
+  }
+
+  function columnGuide(){
+    const blank=n=>ROWS.filter(r=>col(r,n)==='').length;
+    const firstNon=n=>{ const r=ROWS.find(r=>col(r,n)!==''); return r?col(r,n):''; };
+    const topVals=n=>[...uniq(n).entries()].filter(e=>e[0]!=='').sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>`“${e[0]}”`).join(', ');
+    const erpNames=[...new Set(ROWS.flatMap(r=>col(r,'ERP signals')===NO_ERP?[]:erpTokens(col(r,'ERP signals'))))];
+    const catTop=[...uniq('Category').entries()].sort((a,b)=>b[1]-a[1]).slice(0,2).map(e=>e[0]).join(', ');
+    const colRows=[
+      ['S.No',`Row number, 1 to ${N}.`],
+      ['Brand','Brand name as listed.'],
+      ['Category',`One of ${uniq('Category').size} categories (for example ${catTop}).`],
+      ['Sub-category','A more specific description within the category.'],
+      ['Website domain','The brand’s website domain.'],
+      ['HQ city',`Headquarters city as listed, for example “${firstNon('HQ city')}”. Blank for ${blank('HQ city')} brands.`],
+      ['Founded year',`Year founded as listed. Blank for ${blank('Founded year')} brands.`],
+      ['Short note','A one-line description of the brand.'],
+      ['Headcount (approx)',blank('Headcount (approx)')===N?'Blank for every brand.':`Employee count or range as written, for example “${firstNon('Headcount (approx)')}”. Blank for ${blank('Headcount (approx)')} brands.`],
+      ['Product portfolio','Main products sold.'],
+      ['Sales model',`How the brand sells, as written, for example “${firstNon('Sales model')}”.`],
+      ['ERP signals',erpNames.length?`ERP or accounting software named for the brand (${erpNames.join(', ')}), separated by semicolons. “${NO_ERP}” appears for ${N-withErpN} brands.`:`Every brand in this tab says “${NO_ERP}”.`],
+      ['Signal source',`The source recorded alongside the ERP signals value, as written (most common: ${topVals('Signal source')}).`],
+      ['Growth signal','One of Growing, Stable, Struggling or Unclear (see above).'],
+      ['Signal reason','The text evidence behind the Growth signal.'],
+      ['Signal date',`The date or period attached to the cited signal, exactly as written (for example “${firstNon('Signal date')}”). Blank for ${blank('Signal date')} brands.${noneIn('Signal date')?` The text “None” is written for ${noneIn('Signal date')} brands.`:''}`],
+      ['Signal source URL',`Link to the article or filing cited for the Growth signal. ${ROWS.filter(validUrl).length} brands have a link.${noneIn('Signal source URL')?` The text “None” is written for ${noneIn('Signal source URL')} brands.`:''}`]
+    ];
+    return colRows;
   }
 
   /* ===== README ===== */
@@ -682,31 +806,8 @@ function createMarket(M){
     gs.append(h('p',{class:'lead',text:`The “${M.trendsTab}” tab of the sheet also gives a trend for each category (Growing, Stable${TRENDS.some(t=>t[1]==='Unclear')?' or Unclear':''}). Those trends and their summaries are listed in the Sources tab.`}));
     doc.append(gs);
 
-    const blank=n=>ROWS.filter(r=>col(r,n)==='').length;
-    const firstNon=n=>{ const r=ROWS.find(r=>col(r,n)!==''); return r?col(r,n):''; };
-    const topVals=n=>[...uniq(n).entries()].filter(e=>e[0]!=='').sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>`“${e[0]}”`).join(', ');
-    const erpNames=[...new Set(ROWS.flatMap(r=>col(r,'ERP signals')===NO_ERP?[]:erpTokens(col(r,'ERP signals'))))];
-    const catTop=[...uniq('Category').entries()].sort((a,b)=>b[1]-a[1]).slice(0,2).map(e=>e[0]).join(', ');
     const cg=section('Column guide','The 17 fields recorded for every brand, in the order they appear in the sheet.');
-    const colRows=[
-      ['S.No',`Row number, 1 to ${N}.`],
-      ['Brand','Brand name as listed.'],
-      ['Category',`One of ${uniq('Category').size} categories (for example ${catTop}).`],
-      ['Sub-category','A more specific description within the category.'],
-      ['Website domain','The brand’s website domain.'],
-      ['HQ city',`Headquarters city as listed, for example “${firstNon('HQ city')}”. Blank for ${blank('HQ city')} brands.`],
-      ['Founded year',`Year founded as listed. Blank for ${blank('Founded year')} brands.`],
-      ['Short note','A one-line description of the brand.'],
-      ['Headcount (approx)',blank('Headcount (approx)')===N?'Blank for every brand.':`Employee count or range as written, for example “${firstNon('Headcount (approx)')}”. Blank for ${blank('Headcount (approx)')} brands.`],
-      ['Product portfolio','Main products sold.'],
-      ['Sales model',`How the brand sells, as written, for example “${firstNon('Sales model')}”.`],
-      ['ERP signals',erpNames.length?`ERP or accounting software named for the brand (${erpNames.join(', ')}), separated by semicolons. “${NO_ERP}” appears for ${N-withErpN} brands.`:`Every brand in this tab says “${NO_ERP}”.`],
-      ['Signal source',`The source recorded alongside the ERP signals value, as written (most common: ${topVals('Signal source')}).`],
-      ['Growth signal','One of Growing, Stable, Struggling or Unclear (see above).'],
-      ['Signal reason','The text evidence behind the Growth signal.'],
-      ['Signal date',`The date or period attached to the cited signal, exactly as written (for example “${firstNon('Signal date')}”). Blank for ${blank('Signal date')} brands.${noneIn('Signal date')?` The text “None” is written for ${noneIn('Signal date')} brands.`:''}`],
-      ['Signal source URL',`Link to the article or filing cited for the Growth signal. ${ROWS.filter(validUrl).length} brands have a link.${noneIn('Signal source URL')?` The text “None” is written for ${noneIn('Signal source URL')} brands.`:''}`]
-    ];
+    const colRows=columnGuide();
     cg.append(h('div',{class:'scroll'},h('table',{class:'plain'},h('thead',null,h('tr',null,h('th',{text:'Column'}),h('th',{text:'What it contains'}))),h('tbody',null,colRows.map(r=>h('tr',null,h('td',{text:r[0]}),h('td',{text:r[1]})))))));
     doc.append(cg);
 
@@ -800,6 +901,7 @@ function createMarket(M){
   const views=['brands'].concat(M.hasAnalytics?['analytics']:[],['readme','sources']);
   let current='brands';
   function show(view,push){
+    hideTip();
     if(!views.includes(view)) view='brands';
     current=view;
     views.forEach(v=>{ $('view-'+v).hidden=v!==view; });
@@ -817,6 +919,7 @@ function createMarket(M){
 function setHash(name){ try{ history.replaceState(null,'','#'+name); }catch(e){ location.hash=name; } }
 const instances={};
 function showMarket(key,view,push){
+  hideTip();
   if(!instances[key]) key=Object.keys(instances)[0];
   Object.keys(instances).forEach(k=>{
     document.getElementById('market-'+k).hidden=k!==key;
@@ -861,7 +964,9 @@ async function loadTable(file){
   if(!res.ok) throw new Error(`The file “${file}” was not found (error ${res.status}). Check that it is uploaded in the same place as index.html and that its name matches exactly, including capital letters.`);
   const rows=parseCsv(await res.text());
   if(!rows.length || rows.every(r=>r.every(c=>c.trim()===''))) throw new Error(`The file “${file}” is empty.`);
-  return cleanTable(rows);
+  const table=cleanTable(rows);
+  try{ table.lastModified=(res.headers&&res.headers.get)?res.headers.get('Last-Modified'):null; }catch(e){ table.lastModified=null; }
+  return table;
 }
 function needColumns(file,header,required){
   const missing=required.filter(c=>!header.includes(c));
@@ -876,12 +981,13 @@ async function loadMarketData(M){
   const ti=REQUIRED_TREND_COLS.map(n=>tr.header.indexOf(n));
   M.cols=b.header; M.rows=b.body;
   M.trends=tr.body.map(r=>ti.map(i=>r[i]));
+  M.lastModified=[b.lastModified,tr.lastModified].filter(Boolean).map(s=>new Date(s)).filter(d=>!isNaN(d)).sort((x,y)=>y-x)[0]||null;
 }
 function showProblem(message,hint){
   const box=document.getElementById('problem');
   box.textContent='';
   box.append(
-    h('h2',{text:'The page could not load its data'}),
+    h('h3',{text:'The page could not load its data'}),
     h('p',{text:message}),
     h('p',{class:'lead',text:hint||'Fix the file in your GitHub project, wait a minute, then reload this page. README.md explains each step.'})
   );
@@ -900,6 +1006,8 @@ async function boot(){
   }
   try{ await Promise.all(Object.keys(MARKETS).map(k=>loadMarketData(MARKETS[k]))); }
   catch(e){ showProblem(e.message); return; }
+  const latest=Object.keys(MARKETS).map(k=>MARKETS[k].lastModified).filter(Boolean).sort((x,y)=>y-x)[0];
+  if(latest) document.getElementById('page-sub').textContent+=` Data published: ${latest.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}.`;
 
   const notices=[];
   Object.keys(MARKETS).forEach(k=>{
@@ -913,7 +1021,6 @@ async function boot(){
   notices.forEach(n=>nbox.append(h('div',{class:'notice',text:n})));
   nbox.hidden=!notices.length;
 
-  document.body.append(h('div',{class:'tip',id:'tip'}));
   const bar=document.getElementById('markets'), app=document.getElementById('app');
   Object.keys(MARKETS).forEach(k=>{
     const M=MARKETS[k];
@@ -927,6 +1034,32 @@ async function boot(){
   window.addEventListener('hashchange',routeFromHash);
   routeFromHash();
 }
+/* ===== hover information ===== */
+const tipBox = document.createElement('div');
+tipBox.className = 'tip'; tipBox.id = 'tip'; tipBox.setAttribute('role', 'tooltip');
+document.body.append(tipBox);
+function showTip(el, x, y) {
+  const raw = el.getAttribute('data-tip');
+  if (!raw) return hideTip();
+  tipBox.replaceChildren();
+  raw.split('|').filter(Boolean).forEach((p, i) => {
+    const d = document.createElement('div');
+    if (!i) d.className = 'tip-h';
+    d.textContent = p;
+    tipBox.append(d);
+  });
+  tipBox.style.display = 'block';
+  const w = tipBox.offsetWidth, hh = tipBox.offsetHeight;
+  tipBox.style.left = Math.max(8, Math.min(x + 14, window.innerWidth - w - 8)) + 'px';
+  tipBox.style.top = (y + 18 + hh > window.innerHeight ? Math.max(8, y - hh - 12) : y + 18) + 'px';
+}
+function hideTip() { tipBox.style.display = 'none'; }
+document.addEventListener('mousemove', e => { const el = e.target.closest && e.target.closest('[data-tip]'); if (el) showTip(el, e.clientX, e.clientY); else hideTip(); });
+document.addEventListener('mouseleave', hideTip);
+document.addEventListener('focusin', e => { const el = e.target.closest && e.target.closest('[data-tip]'); if (el) { const r = el.getBoundingClientRect(); showTip(el, r.left, r.bottom - 12); } });
+document.addEventListener('focusout', hideTip);
+window.addEventListener('scroll', hideTip, true);
+
 boot();
 
 </script>

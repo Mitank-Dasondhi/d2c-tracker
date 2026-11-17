@@ -23,11 +23,11 @@ A single web page (`index.html`) that shows two lists of direct-to-consumer and 
 
 **What the page does today**
 - A button at the top switches between India and North America. Each one has its own tabs: Brands, Analytics, README and Sources.
-- Brands tab: a search box, a Filters button (category, growth signal, ERP signal, HQ city, headcount, signal source, sort), a row of summary boxes (the two dark boxes are only numbers; the coloured boxes are clickable filters), and a table. Clicking a row shows every field for that brand.
+- Brands tab: a search box, a Filters button (category, growth signal, ERP signal, HQ city, headcount, signal source, sort), a row of grey summary boxes that are only numbers (Total brands, Matching now, Categories), a row of coloured summary boxes that are clickable filters, filter chips with a Clear all button, and a table with 25 rows per page (Previous and Next) and column headings you can click to sort. Clicking a row shows every field for that brand.
 - Analytics tab: brands per category (bars and a pie), growth signal by category, top headquarters cities, founded year, and headcount when enough brands have it. Clicking a category bar opens that category in the Brands tab.
 - README tab: what the growth labels mean (shown only with counts, examples and each brand's own reason from the data), a guide to every column, and the terms used in the data.
 - Sources tab: where the data comes from, the source links grouped by website, the category trends with their summaries, and how recent the evidence is.
-- Light and dark colours follow the person's device. It works on phones.
+- Light colours only (no dark mode), one system font, and a shared design standard that is used by my other sites too. The colours and sizes are defined once in the CSS at the top of the file, and charts follow fixed colour rules (one series is blue; several series use blue, orange, green, yellow, purple, red, teal, pink in that order; Growing is green, Stable yellow, Struggling red, Unclear grey). Hovering over tiles, column headings, status badges, chart bars, pie slices, legend rows and links shows a small white information box. It works on phones.
 - The words at the top (page title, sheet name, file names) are in a SETTINGS block at the start of the script.
 
 **How I will give you work**
