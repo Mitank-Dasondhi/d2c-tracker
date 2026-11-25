@@ -6,7 +6,7 @@ This is a web page that shows a list of direct-to-consumer (D2C) and online shop
 
 You can:
 - search for a brand by name, category, city and more
-- filter the list (for example, only "Growing" brands)
+- filter the list by category, HQ city or headcount, and click a brand name to open its website
 - click a brand to see everything the sheet says about it
 - see charts and numbers on the Analytics tab
 - read what each word means on the README tab, and where each fact came from on the Sources tab
@@ -22,6 +22,10 @@ The page does not keep any brand information inside itself. It reads everything 
 | `data-india-trends.csv` | The India category trends (one row per category). |
 | `data-north-america.csv` | The North America brands list. |
 | `data-north-america-trends.csv` | The North America category trends. |
+| `data-oceania.csv` and `data-oceania-trends.csv` | The Oceania brands list and category trends. |
+| `data-southeast-asia.csv` and `data-southeast-asia-trends.csv` | The Southeast Asia brands list and category trends. |
+| `data-south-africa.csv` and `data-south-africa-trends.csv` | The South Africa brands list and category trends. |
+| `category-fixes.csv` | Optional. Moves a brand to a different category without touching the sheet (see below). |
 | `README.md` | This file. |
 | `NEXT-TIME-PROMPT.md` | Text you can give to a new Claude or Grok to keep improving this project. |
 | `HOW-TO-PUBLISH.md` | Click-by-click steps to create a GitHub account, upload these files and get your live link. |
@@ -36,6 +40,10 @@ All the data came from one Google Sheet called "D2C Commerce India and NA". It h
 | Category trends | `data-india-trends.csv` |
 | Brands - North America | `data-north-america.csv` |
 | Category trends - NA | `data-north-america-trends.csv` |
+| Brands - Oceania | `data-oceania.csv` |
+| Brands - Southeast Asia | `data-southeast-asia.csv` |
+| Brands - South Africa | `data-south-africa.csv` |
+| Category trends (all regions) | One tab for every geography, with a Region column. It must be split into `data-india-trends.csv`, `data-north-america-trends.csv`, `data-oceania-trends.csv`, `data-southeast-asia-trends.csv` and `data-south-africa-trends.csv`, one per Region, keeping only the five columns Category, Trend, Summary, Brands in list, Source URL. The easiest way is to give the new Excel file to Claude and ask it to do this. |
 
 Nothing was added, shortened or changed. Every row and every column from the sheet is in these files. The page shows the values exactly as they are written in the sheet.
 
@@ -61,7 +69,7 @@ If you break a rule, the page shows a red message that tells you which file has 
 - The category trends files need these 5 columns: Category, Trend, Summary, Brands in list, Source URL.
 - The first row is the column names. After that, one brand per row, with no empty rows in between.
 - Do not merge cells in the sheet. Do not leave a column name blank.
-- Growth signal must be one of these four words: Growing, Stable, Struggling, Unclear. Any other word still appears in the list but is not counted in the summary boxes. The page shows a yellow note when this happens.
+- Growth signal must be one of these four words: Growing, Stable, Struggling, Unclear. Any other word is still shown as written. The page shows a yellow note when this happens.
 - Keep the file names exactly as written, with small letters.
 - Save as CSV in UTF-8. Google Sheets does this for you. If you use Excel, choose **Save As**, then **CSV UTF-8 (Comma delimited)**.
 
@@ -78,7 +86,7 @@ Everything you need is in this project. To keep improving the page with a new AI
 
 1. Open `NEXT-TIME-PROMPT.md` and copy the text under the line.
 2. Open a new chat with Claude or Grok and paste it.
-3. Attach `index.html`, this `README.md` and the four `.csv` files.
+3. Attach `index.html`, this `README.md`, all the `.csv` files and `category-fixes.csv`.
 
 To set the page up from scratch on GitHub, follow `HOW-TO-PUBLISH.md`. Keep a spare copy of all the files on your computer or in Google Drive.
 
@@ -89,3 +97,7 @@ If you use a free GitHub account, your project and your live link are public. An
 ## Changing the words at the top
 
 The first lines inside the `<script>` part of `index.html`, under the heading `SETTINGS`, hold the page title, the Google Sheet name and the data file names. If you rename a data file, change its name there too, or ask Claude to do it for you.
+
+## Moving a brand to another category (category-fixes.csv)
+
+If a brand is in the wrong category, you can fix it without editing the Google Sheet. Open `category-fixes.csv` and add a line with three things: the market (India or North America), the exact brand name, and the category you want. The category must already exist in that market. Upload the file the same way as the others. The page shows a yellow note saying how many brands were moved, and no brand is ever removed. A line that does not match is ignored and listed in that note. The best long-term fix is still to correct the category in the Google Sheet and download the CSV files again.

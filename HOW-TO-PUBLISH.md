@@ -39,7 +39,7 @@ Tip for later: protect yourself from losing access. Add a second owner you trust
 ## Part 4: Upload your files
 
 13. On that page, find the sentence "Get started by creating a new file or uploading an existing file". Click the blue words **uploading an existing file**. You will see a big dotted box that says "Drag files here".
-14. Open the folder on your computer where you saved the project files. Select all the files: `index.html`, the four `.csv` files, `README.md`, `NEXT-TIME-PROMPT.md` and `HOW-TO-PUBLISH.md`. Drag them into the dotted box. You can also click **choose your files** and select them.
+14. Open the folder on your computer where you saved the project files. Select all the files: `index.html`, all the `.csv` files, `README.md`, `NEXT-TIME-PROMPT.md` and `HOW-TO-PUBLISH.md`. Drag them into the dotted box. You can also click **choose your files** and select them.
 15. Wait until every file is listed on the page, each with a small progress bar that finishes. Drag in the files only, not a folder.
 16. Scroll to the bottom. Click the green **Commit changes** button. Committing just means saving. You will see your repository page again, now listing all the files.
 
@@ -52,8 +52,8 @@ Tip for later: protect yourself from losing access. Add a second owner you trust
 
 ## Part 6: Check it works
 
-21. Your page opens in a new tab. You should see the title "D2C Commerce India and NA" and two round buttons, **India** and **North America**, each with a number. Below them are the tabs Brands, Analytics, README and Sources, then a search box and a table of brands.
-22. Click **North America**, then type a brand name into the search box. The table should shrink to match.
+21. Your page opens in a new tab. You should see the title "D2C Commerce India and NA" and the tabs Brands, Analytics, README and Sources. At the right end of the tab row is a **Geography** drop-down. Below are a search box and a table of brands.
+22. Open the **Geography** drop-down, choose **North America**, then type a brand name into the search box. The table should shrink to match.
 23. If you see a red box, read the message. It names the file and the problem, and README.md explains how to fix it. If you see a plain "404" page, wait another two minutes and try again.
 24. Bookmark the link. To find it again later, go to your repository, click Settings, then Pages.
 
@@ -64,11 +64,13 @@ Do not open `index.html` by double-clicking it on your computer. Browsers block 
 25. Update your Google Sheet. Click the tab you changed, then click **File**, **Download**, **Comma Separated Values (.csv)**. This downloads only the tab you are looking at.
 26. Rename the downloaded file to its exact name:
     - Brands tab: `data-india.csv`
+    - Brands - Oceania, Brands - Southeast Asia and Brands - South Africa tabs: `data-oceania.csv`, `data-southeast-asia.csv`, `data-south-africa.csv`
+    - The Category trends tab now holds every geography in one tab. Easiest: attach the new Excel file to Claude and ask it to split it into the five trends files.
     - Category trends tab: `data-india-trends.csv`
     - Brands - North America tab: `data-north-america.csv`
     - Category trends - NA tab: `data-north-america-trends.csv`
 27. Go to your repository on GitHub. Click **Add file**, then **Upload files**. Drag in the new CSV files. Files with the same name replace the old ones.
-28. Click the green **Commit changes** button. Wait one to two minutes, then open your live link and press Ctrl + Shift + R (Windows) or Cmd + Shift + R (Mac). You should see the new numbers on the India and North America buttons.
+28. Click the green **Commit changes** button. Wait one to two minutes, then open your live link and press Ctrl + Shift + R (Windows) or Cmd + Shift + R (Mac). You should see the new brand counts in the Geography drop-down.
 
 ## Part 8: Add another bot later
 
@@ -83,6 +85,6 @@ If a bot holds private information, do not put it in a Public repository. The fr
 
 ## Part 9: Get help improving a page later
 
-Open a new chat with Claude or Grok. Open the file `NEXT-TIME-PROMPT.md` in the repository, copy the text under the line, paste it into the chat, and attach `index.html`, `README.md` and the four `.csv` files. The AI will then understand the whole project without needing any earlier conversation.
+Open a new chat with Claude or Grok. Open the file `NEXT-TIME-PROMPT.md` in the repository, copy the text under the line, paste it into the chat, and attach `index.html`, `README.md` and all the `.csv` files. The AI will then understand the whole project without needing any earlier conversation.
 
 Keep a copy of all these files somewhere else too, for example in a folder on your computer or in Google Drive. Then you can always rebuild the project even if you lose access to your GitHub account.

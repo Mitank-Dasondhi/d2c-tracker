@@ -61,6 +61,12 @@ h1{font-size:var(--fs-title);margin:0 0 2px;font-weight:650}
 .mkt{padding:9px 18px;border-radius:var(--radius-pill);border:1px solid var(--border);background:var(--surface);color:var(--text);font-weight:600}
 .mkt:hover{background:var(--soft)}
 .mkt.active{background:var(--blue-bg);color:var(--blue-t);border-color:var(--blue-f)}
+.topbar{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 16px;margin:0 0 14px;border-bottom:1px solid var(--border)}
+.topbar .tabs{border-bottom:0;margin:0;flex:1 1 auto;min-width:0}
+.geo{display:inline-flex;align-items:center;gap:8px;margin:0 0 6px}
+.geo-l{font-size:var(--fs-small);font-weight:600;color:var(--muted);white-space:nowrap}
+.geo select{width:auto;min-width:170px;max-width:60vw;border:1px solid var(--blue-f);border-radius:var(--radius-pill);background:var(--blue-bg);font-weight:600;color:var(--blue-t);padding:7px 14px;cursor:pointer}
+.tabs.top .tab{font-size:15px}
 .pill{display:inline-block;margin-left:8px;padding:0 8px;border-radius:var(--radius-pill);background:var(--gray-bg);color:var(--gray-t);font-size:12px;font-weight:600}
 .mkt.active .pill,.tab.active .pill{background:var(--surface);color:var(--blue-t)}
 .tabs{display:flex;gap:6px;margin:0 0 14px;border-bottom:1px solid var(--border);overflow-x:auto}
@@ -116,7 +122,7 @@ select{padding:8px 10px;border:1px solid var(--border);border-radius:var(--radiu
 .chip{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:var(--radius-pill);background:var(--blue-bg);color:var(--blue-t);font-size:12px;border:0}
 .chip:hover{filter:brightness(.96)}
 .tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
-table{border-collapse:collapse;width:100%;min-width:900px}
+table{border-collapse:collapse;width:100%;min-width:760px}
 th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
 th{font-size:var(--fs-small);font-weight:600;color:var(--muted);background:var(--soft);white-space:nowrap}
 th.sortable{cursor:pointer;user-select:none}
@@ -128,6 +134,8 @@ tbody tr.row:hover{background:var(--soft)}
 tbody tr.row.open{background:var(--blue-bg)}
 td.num{color:var(--muted);width:48px}
 td.name{font-weight:600}
+td.name a{color:var(--blue-t);text-decoration:none}
+td.name a:hover{text-decoration:underline}
 .badge{display:inline-block;padding:2px 9px;border-radius:var(--radius-pill);font-size:12px;font-weight:550;white-space:nowrap}
 .b-Growing{background:var(--green-bg);color:var(--green-t)}
 .b-Stable{background:var(--yellow-bg);color:var(--yellow-t)}
@@ -175,6 +183,18 @@ dl.d dd{margin:0;overflow-wrap:anywhere}
    Rule 3: status colours never change: Growing green, Stable yellow, Struggling red, Unclear grey.
    ===================================================================== */
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.chead{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:flex-start;justify-content:space-between}
+.tgl{display:inline-flex;border:1px solid var(--border);border-radius:var(--radius-pill);overflow:hidden;background:var(--surface)}
+.tgl button{border:0;background:transparent;color:var(--muted);padding:5px 13px;font-size:13px;font-weight:550}
+.tgl button:hover{background:var(--soft)}
+.tgl button.on{background:var(--blue-bg);color:var(--blue-t)}
+.cbody{margin-top:10px}
+.cfoot{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin-top:10px;font-size:var(--fs-small);color:var(--muted)}
+.bars.boxed,.biglist.boxed{max-height:340px;overflow:auto;padding-right:4px}
+.pie{display:flex;flex-wrap:wrap;gap:22px;align-items:center;justify-content:center;padding:6px 0}
+.numtable{max-height:340px;overflow:auto}
+.numtable.short{max-height:none}
+table.plain td.r,table.plain th.r{text-align:right;font-variant-numeric:tabular-nums}
 .stat{background:var(--soft);border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px 14px}
 .stat .n{font-size:26px;font-weight:700;line-height:1.1}
 .stat .l{font-size:12px;color:var(--muted);margin-top:2px}
@@ -213,6 +233,10 @@ svg.donut circle{cursor:default}
 @media (max-width:700px){ .stats{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (max-width:620px){ .two{grid-template-columns:1fr} }
 @media (max-width:600px){
+  .tabs.top .tab{padding:9px 9px;font-size:14px}
+  .geo{width:100%}
+  .geo select{flex:1;max-width:none}
+  .tabs.top .pill{margin-left:4px;padding:0 6px}
   .wrap{padding:12px}
   .kv{grid-template-columns:1fr;gap:0}
   .kv dt{margin-top:8px}
@@ -270,7 +294,10 @@ svg.donut text{pointer-events:none}
   <noscript><div class="problem"><h3>JavaScript is turned off</h3><p>This page needs JavaScript to show the data. Turn it on in your browser settings and reload.</p></div></noscript>
   <div class="problem" id="problem" hidden></div>
   <div id="notices" hidden></div>
-  <div class="markets" role="tablist" id="markets"></div>
+  <div class="topbar">
+    <div class="tabs top" role="tablist" id="toptabs"></div>
+    <label class="geo" id="geo" hidden><span class="geo-l">Geography</span><select id="geoSel" aria-label="Choose a geography"></select></label>
+  </div>
 </div>
 <script>
 
@@ -281,14 +308,24 @@ svg.donut text{pointer-events:none}
 const SETTINGS={
   pageTitle:'D2C Commerce India and NA',   // big title at the top of the page
   sheetTitle:'D2C Commerce India and NA',  // name of your Google Sheet (shown in the Sources tab)
+  fixesFile:'category-fixes.csv',          // optional: moves a brand to a different existing category (see README.md)
   sheetUrl:'',                             // optional link to your Google Sheet. Leave empty to keep the sheet private.
   markets:[
     { key:'india', label:'India',
       brandsFile:'data-india.csv', trendsFile:'data-india-trends.csv',
-      brandsTab:'Brands', trendsTab:'Category trends' },
+      brandsTab:'Brands', trendsTab:'Category trends (all regions)' },
     { key:'na', label:'North America',
       brandsFile:'data-north-america.csv', trendsFile:'data-north-america-trends.csv',
-      brandsTab:'Brands - North America', trendsTab:'Category trends - NA' }
+      brandsTab:'Brands - North America', trendsTab:'Category trends (all regions)' },
+    { key:'oceania', label:'Oceania',
+      brandsFile:'data-oceania.csv', trendsFile:'data-oceania-trends.csv',
+      brandsTab:'Brands - Oceania', trendsTab:'Category trends (all regions)' },
+    { key:'sea', label:'Southeast Asia',
+      brandsFile:'data-southeast-asia.csv', trendsFile:'data-southeast-asia-trends.csv',
+      brandsTab:'Brands - Southeast Asia', trendsTab:'Category trends (all regions)' },
+    { key:'za', label:'South Africa',
+      brandsFile:'data-south-africa.csv', trendsFile:'data-south-africa-trends.csv',
+      brandsTab:'Brands - South Africa', trendsTab:'Category trends (all regions)' }
   ]
 };
 const SHEET_TITLE=SETTINGS.sheetTitle;
@@ -353,13 +390,13 @@ function legend(items,total){
   });
   return box;
 }
-function bars(entries,total,onClick){
+function bars(entries,total,onClick,boxed){
   const max=Math.max(1,...entries.map(e=>e[1]));
-  const wrap=h('div',{class:'bars'});
-  entries.forEach(([label,val])=>{
+  const wrap=h('div',{class:'bars'+(boxed?' boxed':'')});
+  entries.forEach(([label,val,color])=>{
     const row=h(onClick?'button':'div',{class:'brow'+(onClick?' click':''),'data-tip':`${label}|${val} brands|${pct(val,total)} of ${total} brands`});
     if(onClick){ row.type='button'; row.addEventListener('click',()=>onClick(label)); }
-    const fill=h('div',{class:'fill'}); fill.style.width=(val/max*100)+'%';
+    const fill=h('div',{class:'fill'}); fill.style.width=(val/max*100)+'%'; if(color) fill.style.background=color;
     row.append(h('span',{class:'bl',text:label,title:label}),h('div',{class:'track'},fill),h('span',{class:'bv',text:`${val} · ${pct(val,total)}`}));
     wrap.append(row);
   });
@@ -376,12 +413,6 @@ const TERMS=[['D2C',/D2C/],['DTC',/\bDTC\b/],['Omnichannel',/Omnichannel/],['Qui
 function marketTemplate(M){
   return `
   <div class="sub">Source: Google Sheet “${SHEET_TITLE}”, tab “${M.tab}”. Every value is shown as written in the sheet.</div>
-  <div class="tabs" role="tablist">
-    <button class="tab" role="tab" data-view="brands">Brands<span class="pill" data-id="pill-brands"></span></button>
-    ${M.hasAnalytics?'<button class="tab" role="tab" data-view="analytics">Analytics</button>':''}
-    <button class="tab" role="tab" data-view="readme">README</button>
-    <button class="tab" role="tab" data-view="sources">Sources</button>
-  </div>
   <div data-id="view-brands">
     <div class="search">
       <input data-id="q" type="search" placeholder="Search by brand, category, sub-category, city…" autocomplete="off" aria-label="Search brands">
@@ -389,17 +420,8 @@ function marketTemplate(M){
     </div>
     <div class="filters" data-id="filters">
       <label>Category<select data-id="f-cat"></select></label>
-      <label>Growth signal<select data-id="f-growth"></select></label>
-      <label data-id="lbl-erp">ERP signal<select data-id="f-erp"></select></label>
       <label data-id="lbl-city">HQ city<select data-id="f-city"></select></label>
       <label data-id="lbl-hc">Headcount<select data-id="f-hc"></select></label>
-      <label data-id="lbl-src">Signal source<select data-id="f-src"></select></label>
-      <label>Sort by<select data-id="f-sort">
-        <option value="sno">S.No</option>
-        <option value="brand">Brand (A–Z)</option>
-        <option value="cat">Category (A–Z)</option>
-        <option value="founded">Founded year (oldest first)</option>
-      </select></label>
     </div>
     <div class="kpis" data-id="kpis"></div>
     <div class="status">
@@ -411,7 +433,7 @@ function marketTemplate(M){
       <table><thead data-id="thead"></thead><tbody data-id="tbody"></tbody></table>
       <div class="empty" data-id="empty" hidden>No brands match the current search and filters.</div>
     </div>
-    <div class="sub" style="margin-top:10px">Click any row to see every field from the sheet for that brand.</div>
+    <div class="sub" style="margin-top:10px">Click a brand name to open its website in a new tab. Click anywhere else on a row to see every field from the sheet for that brand.</div>
   </div>
   ${M.hasAnalytics?'<div data-id="view-analytics" hidden></div>':''}
   <div data-id="view-readme" hidden></div>
@@ -432,7 +454,7 @@ function createMarket(M){
   const uniq=name=>countMap(r=>r[I[name]]);
   const withErpN=ROWS.filter(r=>col(r,'ERP signals')!==NO_ERP && col(r,'ERP signals')!=='').length;
   const hasErp=withErpN>0;
-  const state={q:'',cat:'',growth:'',erp:'',city:'',hc:'',src:'',sort:'sno',sortCol:'',sortDir:'asc',page:1};
+  const state={q:'',cat:'',city:'',hc:'',sortCol:'',sortDir:'asc',page:1};
   let matchEl=h('span');
   function refresh(){ state.page=1; renderTable(); }
 
@@ -445,17 +467,6 @@ function createMarket(M){
   const sortedEntries=(map,byCount)=>{ const a=[...map.entries()]; a.sort(byCount?(x,y)=>y[1]-x[1]||String(x[0]).localeCompare(String(y[0])):(x,y)=>String(x[0]).localeCompare(String(y[0]))); return a; };
   function buildFilters(){
     fillSelect($('f-cat'), sortedEntries(uniq('Category'),true).map(([v,n])=>[v,`${v} (${n})`]), 'All categories');
-    const gm=uniq('Growth signal');
-    fillSelect($('f-growth'), GROWTH_ORDER.filter(v=>gm.has(v)).map(v=>[v,`${v} (${gm.get(v)})`]), 'All');
-
-    if(hasErp){
-      const erpCount=new Map(); let anyErp=0, noErp=0;
-      ROWS.forEach(r=>{ const v=col(r,'ERP signals'); if(v===NO_ERP){ noErp++; return; } anyErp++; new Set(erpTokens(v)).forEach(t=>erpCount.set(t,(erpCount.get(t)||0)+1)); });
-      const items=[['__any__',`Any ERP signal found (${anyErp})`],['__none__',`${NO_ERP} (${noErp})`]];
-      sortedEntries(erpCount,true).forEach(([t,n])=>items.push([t,`Includes: ${t} (${n})`]));
-      fillSelect($('f-erp'),items,'All');
-    } else $('lbl-erp').hidden=true;
-
     const addBlank=(map,sel,lbl,anyLabel)=>{
       const blank=map.get('')||0; map.delete('');
       if(map.size<2){ lbl.hidden=true; return; }
@@ -465,20 +476,11 @@ function createMarket(M){
     };
     addBlank(uniq('HQ city'),$('f-city'),$('lbl-city'),'All cities');
     addBlank(uniq('Headcount (approx)'),$('f-hc'),$('lbl-hc'),'All');
-    addBlank(uniq('Signal source'),$('f-src'),$('lbl-src'),'All');
   }
   function matches(r){
     if(state.cat && r[I['Category']]!==state.cat) return false;
-    if(state.growth && r[I['Growth signal']]!==state.growth) return false;
-    if(state.erp){
-      const v=r[I['ERP signals']];
-      if(state.erp==='__any__'){ if(v===NO_ERP) return false; }
-      else if(state.erp==='__none__'){ if(v!==NO_ERP) return false; }
-      else if(!erpTokens(v).includes(state.erp)) return false;
-    }
     if(state.city){ const v=r[I['HQ city']]; if(state.city===BLANK ? v!=='' : v!==state.city) return false; }
     if(state.hc){ const v=r[I['Headcount (approx)']]; if(state.hc===BLANK ? v!=='' : v!==state.hc) return false; }
-    if(state.src && r[I['Signal source']]!==state.src) return false;
     if(state.q){
       const hay=r.join(' \u0001 ').toLowerCase();
       for(const t of state.q.toLowerCase().split(/\s+/).filter(Boolean)){ if(!hay.includes(t)) return false; }
@@ -494,20 +496,16 @@ function createMarket(M){
         if(x===''&&y==='') return 0; if(x==='') return 1; if(y==='') return -1;      // blanks always last
         let c;
         if(numeric) c=Number(x)-Number(y);
-        else if(cn==='Growth signal') c=GROWTH_ORDER.indexOf(x)-GROWTH_ORDER.indexOf(y);
         else c=x.localeCompare(y);
         return (c*dir)||B(a).localeCompare(B(b));
       });
       return out;
     }
-    const s=state.sort;
-    if(s==='brand') out.sort((a,b)=>B(a).localeCompare(B(b)));
-    else if(s==='cat') out.sort((a,b)=>C(a).localeCompare(C(b))||B(a).localeCompare(B(b)));
-    else if(s==='founded') out.sort((a,b)=>{ const x=a[I['Founded year']], y=b[I['Founded year']]; if(x===''&&y==='') return 0; if(x==='') return 1; if(y==='') return -1; return Number(x)-Number(y); });
-    else out.sort((a,b)=>Number(a[I['S.No']])-Number(b[I['S.No']]));
+    out.sort((a,b)=>Number(a[I['S.No']])-Number(b[I['S.No']]));
     return out;
   }
-  const TCOLS=[['S.No','S.No','num'],['Brand','Brand','name'],['Category','Category'],['Sub-category','Sub-category'],['HQ city','HQ city'],['Founded year','Founded'],['Headcount (approx)','Headcount'],['Growth signal','Growth'],['ERP signals','ERP signals']].filter(c=>hasErp||c[0]!=='ERP signals');
+  const TCOLS=[['S.No','S.No','num'],['Brand','Brand','name'],['Category','Category'],['Sub-category','Sub-category'],['HQ city','HQ city'],['Founded year','Founded'],['Headcount (approx)','Headcount']];
+  function siteUrl(r){ const d=col(r,'Website domain'); if(!d) return null; return safeUrl(/^https?:\/\//i.test(d)?d:'https://'+d.replace(/^\/+/,'')); }
   function td(text,cls){
     const c=h('td',cls?{class:cls}:null);
     if(text===''){ c.append(h('span',{class:'muted',text:'—'})); } else c.textContent=text;
@@ -521,6 +519,7 @@ function createMarket(M){
       else if(cname==='Signal source URL' && safeUrl(v)) dd.append(aLink(v));
       else dd.textContent=v;
       dl.append(h('dt',{text:cname}),dd);
+      if(cname==='Category' && M.moved && M.moved.has(r[I['Brand']])) dl.append(h('dt',{text:'Category in the Google Sheet'}),h('dd',{text:M.moved.get(r[I['Brand']])+' (moved by category-fixes.csv)'}));
     });
     const c=h('td',{colspan:String(TCOLS.length)},dl);
     return h('tr',{class:'detail'},c);
@@ -537,10 +536,11 @@ function createMarket(M){
     slice.forEach(r=>{
       const tr=h('tr',{class:'row'});
       TCOLS.forEach(([name,,cls])=>{
-        if(name==='Growth signal'){
-          const v=r[I[name]]; const g=h('td');
-          g.append(h('span',{class:'badge b-'+gcls(v),text:v,'data-tip':`${v}|Growth signal copied from the sheet|The evidence is the Signal reason in the same row`}));
-          tr.append(g);
+        if(name==='Brand'){
+          const c=h('td',{class:'name'}), u=siteUrl(r), b=r[I[name]];
+          if(u){ const a=h('a',{href:u,target:'_blank',rel:'noopener noreferrer',text:b,'data-tip':`${b}|Opens ${col(r,'Website domain')} in a new tab`}); a.addEventListener('click',e=>e.stopPropagation()); c.append(a); }
+          else c.textContent=b;
+          tr.append(c);
         } else tr.append(td(r[I[name]],cls));
       });
       tr.addEventListener('click',()=>{
@@ -561,51 +561,43 @@ function createMarket(M){
     root.querySelectorAll('thead th').forEach(th=>{
       if(th.dataset.col===state.sortCol) th.setAttribute('aria-sort',state.sortDir==='asc'?'ascending':'descending'); else th.removeAttribute('aria-sort');
     });
-    renderChips(); renderKpiActive();
+    renderChips();
   }
   function renderChips(){
     const box=$('chips'); box.textContent='';
     let any=false;
-    [['q','Search'],['cat','Category'],['growth','Growth'],['erp','ERP'],['city','City'],['hc','Headcount'],['src','Source']].forEach(([k,label])=>{
+    [['q','Search'],['cat','Category'],['city','City'],['hc','Headcount']].forEach(([k,label])=>{
       if(!state[k]) return;
       any=true;
-      let val=state[k]; if(val===BLANK) val='(blank)'; if(val==='__any__') val='Any ERP signal'; if(val==='__none__') val=NO_ERP;
+      let val=state[k]; if(val===BLANK) val='(blank)';
       const b=h('button',{class:'chip',type:'button',text:`${label}: ${val} ×`});
       b.addEventListener('click',()=>{ state[k]=''; syncControls(); refresh(); });
       box.append(b);
     });
     if(any){
       const c=h('button',{class:'btn small',type:'button',text:'Clear all'});
-      c.addEventListener('click',()=>{ Object.assign(state,{q:'',cat:'',growth:'',erp:'',city:'',hc:'',src:''}); syncControls(); refresh(); });
+      c.addEventListener('click',()=>{ Object.assign(state,{q:'',cat:'',city:'',hc:''}); syncControls(); refresh(); });
       box.append(c);
     }
   }
   function buildKpis(){
     const box=$('kpis'); box.textContent='';
-    const rowStatic=h('div',{class:'kpi-row'}), rowClick=h('div',{class:'kpi-row clicks'}); box.append(rowStatic,rowClick);
-    const gc=uniq('Growth signal');
+    const rowStatic=h('div',{class:'kpi-row'}); box.append(rowStatic);
     const items=[
       {n:N,l:'Total brands',tip:'Total brands|All the brands in this list'},
       {n:N,l:'Matching now',tip:'Matching now|Brands that match the current search and filters',match:true},
       {n:uniq('Category').size,l:'Categories',tip:'Categories|Different categories in this list'}
     ];
-    GROWTH_ORDER.forEach(g=>items.push({n:gc.get(g)||0,l:g==='Unclear'?'Growth unclear':g,k:'growth',v:g,c:'k-'+g}));
-    if(hasErp) items.push({n:withErpN,l:'Has an ERP signal',k:'erp',v:'__any__',c:'k-erp'},{n:N-withErpN,l:NO_ERP,k:'erp',v:'__none__',c:'k-noerp'});
     items.forEach(it=>{
-      const tip=it.tip||`${it.l}|${it.n} of ${N} brands (${pct(it.n,N)})|Click to filter the list`;
-      const el=h(it.k?'button':'div',{class:'kpi '+(it.k?'click '+it.c:'static'),'data-tip':tip});
-      if(it.k){ el.type='button'; el.dataset.k=it.k; el.dataset.v=it.v; }
+      const el=h('div',{class:'kpi static','data-tip':it.tip});
       const n=h('div',{class:'n',text:String(it.n)});
       if(it.match) matchEl=n;
       el.append(n,h('div',{class:'l',text:it.l}));
-      if(it.k) el.addEventListener('click',()=>{ state[it.k]=state[it.k]===it.v?'':it.v; syncControls(); refresh(); });
-      (it.k?rowClick:rowStatic).append(el);
+      rowStatic.append(el);
     });
   }
-  function renderKpiActive(){ root.querySelectorAll('.kpi[data-k]').forEach(el=>el.classList.toggle('active',state[el.dataset.k]===el.dataset.v)); }
   function syncControls(){
-    $('q').value=state.q; $('f-cat').value=state.cat; $('f-growth').value=state.growth; $('f-erp').value=state.erp;
-    $('f-city').value=state.city; $('f-hc').value=state.hc; $('f-src').value=state.src; $('f-sort').value=state.sort;
+    $('q').value=state.q; $('f-cat').value=state.cat; $('f-city').value=state.city; $('f-hc').value=state.hc;
   }
   function initBrands(){
     const tr=h('tr');
@@ -622,110 +614,104 @@ function createMarket(M){
     buildFilters(); buildKpis();
     let t;
     $('q').addEventListener('input',e=>{ clearTimeout(t); t=setTimeout(()=>{ state.q=e.target.value.trim(); refresh(); },120); });
-    [['f-cat','cat'],['f-growth','growth'],['f-erp','erp'],['f-city','city'],['f-hc','hc'],['f-src','src'],['f-sort','sort']].forEach(([id,k])=>{
-      $(id).addEventListener('change',e=>{ state[k]=e.target.value; if(k==='sort') state.sortCol=''; refresh(); });
+    [['f-cat','cat'],['f-city','city'],['f-hc','hc']].forEach(([id,k])=>{
+      $(id).addEventListener('change',e=>{ state[k]=e.target.value; refresh(); });
     });
     $('toggleFilters').addEventListener('click',e=>{ const open=$('filters').classList.toggle('open'); e.currentTarget.classList.toggle('on',open); e.currentTarget.setAttribute('aria-expanded',String(open)); });
     $('prev').addEventListener('click',()=>{ state.page--; renderTable(); });
     $('next').addEventListener('click',()=>{ state.page++; renderTable(); });
-    $('pill-brands').textContent=String(N);
     renderTable();
   }
   function jumpToCategory(cat){
-    Object.assign(state,{q:'',cat:cat,growth:'',erp:'',city:'',hc:'',src:''});
-    syncControls(); refresh(); show('brands',true);
+    Object.assign(state,{q:'',cat:cat,city:'',hc:''});
+    syncControls(); refresh(); showMarket(M.key,'brands',true); window.scrollTo(0,0);
   }
 
-  /* ===== Analytics (India only) ===== */
+  /* ===== Analytics ===== */
+  const SHORT=5, TOPPIE=8;
+  /* One chart card: title, a toggle (Bar chart / Pie chart / Numbers) and a Show all / Show fewer button.
+     items = [label, count] in the order they should appear. All counts come from the Brands tab. */
+  function chartCard(o){
+    const sec=section(o.title,o.intro);
+    let mode='bar', open=false;
+    const modes=o.pie?[['bar','Bar chart'],['pie','Pie chart'],['num','Numbers']]:[['bar','Chart'],['num','Numbers']];
+    const head=sec.querySelector('h2'); const lead=sec.querySelector('p.lead');
+    const hd=h('div',{class:'chead'}); sec.insertBefore(hd,head); hd.append(h('div',null,head,lead||null));
+    const tgl=h('div',{class:'tgl',role:'group','aria-label':'Choose how to show '+o.title});
+    modes.forEach(([k,l])=>{ const b=h('button',{type:'button','data-mode':k,text:l}); b.addEventListener('click',()=>{ mode=k; draw(); }); tgl.append(b); });
+    hd.append(tgl);
+    const body=h('div',{class:'cbody'}), foot=h('div',{class:'cfoot'}); sec.append(body,foot);
+    const all=o.items, canExpand=o.detail?true:all.length>SHORT;
+    function draw(){
+      hideTip();
+      tgl.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
+      body.textContent='';
+      const shown=o.detail?(open?o.detail:all):(open?all:all.slice(0,SHORT));
+      const scrolls=open&&shown.length>SHORT;
+      if(mode==='bar'){
+        body.append(bars(shown.map(([l,v],i)=>[l,v,PALETTE[i%PALETTE.length]]),o.total,o.onClick,scrolls));
+      } else if(mode==='pie'){
+        const k=open?TOPPIE:SHORT, top=all.slice(0,k), rest=all.slice(k);
+        const it=top.map(([l,v],i)=>({label:l,value:v,color:PALETTE[i%PALETTE.length]}));
+        if(rest.length) it.push({label:`Other (${rest.length} ${o.unit})`,value:rest.reduce((a,c)=>a+c[1],0),color:OTHER_COLOR});
+        body.append(h('div',{class:'pie'},donut(it,o.total,String(o.total),'brands'),legend(it,o.total)));
+      } else {
+        const rows=shown.map(([l,v])=>h('tr',null,h('td',{text:l}),h('td',{class:'r',text:String(v)}),h('td',{class:'r',text:pct(v,o.total)})));
+        if(!open && !o.detail && all.length>SHORT){ const rest=all.slice(SHORT), rv=rest.reduce((a,c)=>a+c[1],0); rows.push(h('tr',null,h('td',{class:'muted',text:`All other ${o.unit} (${rest.length})`}),h('td',{class:'r',text:String(rv)}),h('td',{class:'r',text:pct(rv,o.total)}))); }
+        body.append(h('div',{class:'numtable'+(scrolls?'':' short')},h('table',{class:'plain'},h('thead',null,h('tr',null,h('th',{text:o.head}),h('th',{class:'r',text:'Brands'}),h('th',{class:'r',text:'Share'}))),h('tbody',null,rows))));
+      }
+      foot.textContent='';
+      if(canExpand){
+        const b=h('button',{class:'btn small',type:'button',text:open?'Show fewer':(o.detail?o.expandLabel:`Show all ${all.length}`)});
+        b.addEventListener('click',()=>{ open=!open; draw(); });
+        foot.append(b,h('span',{text:o.detail?(open?`Showing one entry per ${o.unitOne}.`:`Showing ${all.length} groups. Expand to see every ${o.unitOne}.`):(open?`Showing all ${all.length} ${o.unit}.`:`Showing the top ${SHORT} of ${all.length} ${o.unit}. Expand to see the rest.`)}));
+      }
+      if(o.note) foot.append(h('span',{text:o.note}));
+    }
+    draw(); return sec;
+  }
   function buildAnalytics(){
     hideTip();
     const rootA=$('view-analytics'); rootA.textContent='';
     const doc=h('div',{class:'doc'});
     const cats=[...countMap(r=>col(r,'Category')).entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
-    const GCOL=STATUS_C;
-    const GTXT={Growing:'var(--surface)',Stable:'var(--text)',Struggling:'var(--surface)',Unclear:'var(--surface)'};
-    const withSignal=ROWS.filter(r=>col(r,'Growth signal')!=='Unclear').length;
+    const cityMap=countMap(r=>col(r,'HQ city')); const blankCity=cityMap.get('')||0; cityMap.delete('');
+    const cities=[...cityMap.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+    const knownCity=N-blankCity;
     doc.append(h('div',{class:'stats'},
       h('div',{class:'stat','data-tip':'Total brands|All the brands in this list'},h('div',{class:'n',text:String(N)}),h('div',{class:'l',text:'Total brands'})),
       h('div',{class:'stat','data-tip':'Categories|Different categories in this list'},h('div',{class:'n',text:String(cats.length)}),h('div',{class:'l',text:'Categories'})),
       h('div',{class:'stat','data-tip':`Largest category|${cats[0][0]}|${cats[0][1]} brands (${pct(cats[0][1],N)} of the list)`},h('div',{class:'n',text:String(cats[0][1])}),h('div',{class:'l',text:`Largest category: ${cats[0][0]}`})),
-      h('div',{class:'stat','data-tip':`Brands with a signal|${withSignal} brands (${pct(withSignal,N)} of the list)|Growing, Stable or Struggling`},h('div',{class:'n',text:String(withSignal)}),h('div',{class:'l',text:'Brands with a Growing, Stable or Struggling signal'}))
+      h('div',{class:'stat','data-tip':`HQ cities|Different HQ cities written in the sheet|${knownCity} of ${N} brands have an HQ city`},h('div',{class:'n',text:String(cities.length)}),h('div',{class:'l',text:'Different HQ cities'}))
     ));
 
-    const s1=section('Brands per category','Number of brands in each category. Click a bar to see those brands.');
-    const top=cats.slice(0,7), rest=cats.slice(7);
-    const dItems=top.map((c,i)=>({label:c[0],value:c[1],color:PALETTE[i]}));
-    dItems.push({label:`Other (${rest.length} categories)`,value:rest.reduce((a,c)=>a+c[1],0),color:OTHER_COLOR});
-    s1.append(h('div',{class:'two'},bars(cats,N,jumpToCategory),h('div',{class:'donutcol'},donut(dItems,N,String(N),'brands'),legend(dItems,N))));
-    const det=h('details',null,h('summary',{text:'Show category numbers as a table'}));
-    const trows=cats.map(([c,n])=>{
-      const rs=ROWS.filter(r=>col(r,'Category')===c);
-      return h('tr',null,h('td',{text:c}),h('td',{text:String(n)}),h('td',{text:pct(n,N)}),GROWTH_ORDER.map(g=>h('td',{text:String(rs.filter(r=>col(r,'Growth signal')===g).length)})));
-    });
-    det.append(h('div',{class:'scroll'},h('table',{class:'plain'},h('thead',null,h('tr',null,['Category','Brands','Share','Growing','Stable','Struggling','Unclear'].map(t=>h('th',{text:t})))),h('tbody',null,trows))));
-    s1.append(det); doc.append(s1);
+    doc.append(chartCard({title:'Brands per category',intro:'Number of brands in each category. In the bar chart, click a bar to see those brands.',items:cats,total:N,unit:'categories',unitOne:'category',head:'Category',pie:true,onClick:jumpToCategory}));
 
-    const s2=section('Growth signal by category','Each bar is one category, scaled to 100% and split by the Growth signal. The number inside a coloured block is a brand count, and hovering a block shows the details. The number at the right is the category’s total brands.');
-    const sl=h('div',{class:'sublegend'});
-    GROWTH_ORDER.forEach(g=>{ const i=h('i'); i.style.background=GCOL[g]; sl.append(h('span',{'data-tip':`${g}|Growth signal copied from the sheet|The evidence is the Signal reason in the same row`},i,g)); });
-    s2.append(sl);
-    const wrap2=h('div',{class:'bars'});
-    cats.forEach(([c,n])=>{
-      const rs=ROWS.filter(r=>col(r,'Category')===c);
-      const row=h('button',{class:'brow click',type:'button'});
-      row.addEventListener('click',()=>jumpToCategory(c));
-      const track=h('div',{class:'track tall'});
-      GROWTH_ORDER.forEach(g=>{
-        const k=rs.filter(r=>col(r,'Growth signal')===g).length; if(!k) return;
-        const seg=h('div',{class:'seg','data-tip':`${c} · ${g}|${k} of ${n} brands|${pct(k,n)} of this category`});
-        seg.style.width=(k/n*100)+'%'; seg.style.background=GCOL[g]; seg.style.color=GTXT[g];
-        if(k/n>=0.07) seg.textContent=String(k);
-        track.append(seg);
-      });
-      row.append(h('span',{class:'bl',text:c,title:c}),track,h('span',{class:'bv',text:`${n} brands`}));
-      wrap2.append(row);
-    });
-    const gm=countMap(r=>col(r,'Growth signal'));
-    const gItems=GROWTH_ORDER.map(g=>({label:g,value:gm.get(g)||0,color:GCOL[g]}));
-    s2.append(h('div',{class:'two'},wrap2,h('div',{class:'donutcol'},donut(gItems,N,String(N),'brands'),legend(gItems,N))));
-    doc.append(s2);
-
-    const cityMap=countMap(r=>col(r,'HQ city')); const blankCity=cityMap.get('')||0; cityMap.delete('');
-    const cities=[...cityMap.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
-    const knownCity=N-blankCity;
-    const cityEntries=cities.slice(0,10), restC=cities.slice(10);
-    if(restC.length) cityEntries.push([`Other cities (${restC.length})`,restC.reduce((a,c)=>a+c[1],0)]);
-    const s3=section('Headquarters city',`Top cities among the ${knownCity} brands that have an HQ city in the sheet.`);
-    s3.append(bars(cityEntries,knownCity));
-    s3.append(h('p',{class:'fine',text:`${blankCity} brands have no HQ city in the sheet and are not included here.`}));
-    doc.append(s3);
+    doc.append(chartCard({title:'Headquarters city',intro:`Cities among the ${knownCity} brands that have an HQ city in the sheet.`,items:cities,total:knownCity,unit:'cities',unitOne:'city',head:'HQ city',pie:true,
+      note:blankCity?`${blankCity} brands have no HQ city in the sheet and are not included.`:''}));
 
     const years=ROWS.map(r=>parseInt(col(r,'Founded year'),10)).filter(y=>!isNaN(y));
-    const bins=[['Before 2010',years.filter(y=>y<2010).length]];
-    for(let y=2010;y<=Math.max(...years);y++) bins.push([String(y),years.filter(v=>v===y).length]);
-    const maxBin=Math.max(1,...bins.map(b=>b[1]));
-    const s4=section('Founded year',`Brands by founding year, for the ${years.length} brands that have a founded year in the sheet.`);
-    const colsBox=h('div',{class:'cols'});
-    bins.forEach(([l,v])=>{ const bar=h('div',{class:'bar'}); bar.style.height=(v/maxBin*100*0.8)+'%'; colsBox.append(h('div',{class:'col','data-tip':`${l}|${v} brands|${pct(v,years.length)} of ${years.length} brands with a founded year`},h('span',{class:'cv',text:String(v)}),bar,h('span',{class:'cl',text:l}))); });
-    s4.append(colsBox);
-    s4.append(h('p',{class:'fine',text:`${N-years.length} brands have no founded year in the sheet and are not included here.`}));
-    doc.append(s4);
+    if(years.length){
+      const grp=[['Before 2000',y=>y<2000],['2000–2009',y=>y>=2000&&y<=2009],['2010–2014',y=>y>=2010&&y<=2014],['2015–2019',y=>y>=2015&&y<=2019],['2020 or later',y=>y>=2020]].map(([l,f])=>[l,years.filter(f).length]);
+      const detail=[['Before 2010',years.filter(y=>y<2010).length]];
+      for(let y=2010;y<=Math.max(...years);y++) detail.push([String(y),years.filter(v=>v===y).length]);
+      doc.append(chartCard({title:'Founded year',intro:`Brands by founding year, for the ${years.length} brands that have a founded year in the sheet.`,items:grp,detail:detail,total:years.length,unit:'groups',unitOne:'year',head:'Founded',pie:false,expandLabel:'Show every year',note:(N-years.length)?`${N-years.length} brands have no founded year in the sheet and are not included.`:''}));
+    }
 
     const hcOrder=['1-50 (Apollo range)','51-200 (Apollo range)','201-500 (Apollo range)','501-1000 (Apollo range)','1001-5000 (Apollo range)','1001+ (Apollo range)','5001+ (Apollo range)'];
     const hcMap=countMap(r=>col(r,'Headcount (approx)'));
-    const hcEntries=[];
-    hcOrder.forEach(k=>{ if(hcMap.get(k)) hcEntries.push([k.replace(' (Apollo range)',''),hcMap.get(k)]); });
-    hcMap.forEach((v,k)=>{ if(k!=='' && k!=='unknown' && !hcOrder.includes(k)) hcEntries.push([k,v]); });
-    if(hcMap.get('unknown')) hcEntries.push(['unknown',hcMap.get('unknown')]);
-    if(hcMap.get('')) hcEntries.push(['(blank in sheet)',hcMap.get('')]);
-    const s5=section('Headcount',`Headcount values as recorded in the sheet, across all ${N} brands.${[...hcMap.keys()].some(k=>/Apollo range/.test(k))?' Ranges are labelled “Apollo range” in the sheet.':''}`);
-    const hcFilled=N-(hcMap.get('')||0);
-    if(hcFilled/N>=0.2){ s5.append(bars(hcEntries,N)); doc.append(s5); }
-
+    const blankHc=hcMap.get('')||0; hcMap.delete('');
+    const hcFilled=N-blankHc;
+    const hcItems=[...hcMap.entries()].map(([k,v])=>[k.replace(' (Apollo range)',''),v]).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+    if(hcFilled/N>=0.2){
+      doc.append(chartCard({title:'Headcount',intro:`Headcount values as written in the sheet, for the ${hcFilled} brands that have one.${[...hcMap.keys()].some(k=>/Apollo range/.test(k))?' Ranges are labelled “Apollo range” in the sheet.':''}`,items:hcItems,total:hcFilled,unit:'headcount values',unitOne:'value',head:'Headcount',pie:true,
+        note:`${blankHc} brands have no headcount in the sheet and are not included in this chart.`}));
+    } else {
+      const sh=section('Headcount',hcFilled?`Only ${hcFilled} of ${N} brands have a headcount in the sheet, so no chart is shown.`:`None of the ${N} brands has a headcount in the sheet, so no chart is shown.`); doc.append(sh);
+    }
     doc.append(h('p',{class:'fine',text:'Every number on this tab is counted directly from the Brands tab of the sheet. Percentages are rounded to one decimal place.'}));
     rootA.append(doc);
   }
-
   function columnGuide(){
     const blank=n=>ROWS.filter(r=>col(r,n)==='').length;
     const firstNon=n=>{ const r=ROWS.find(r=>col(r,n)!==''); return r?col(r,n):''; };
@@ -838,8 +824,8 @@ function createMarket(M){
     s1.append(h('dl',{class:'kv'},
       h('dt',{text:'Google Sheet'}),h('dd',null,SHEET_URL?[aLink(SHEET_URL,SHEET_TITLE),' (access depends on your Google account)']:SHEET_TITLE),
       h('dt',{text:'Data files'}),h('dd',{text:`${M.brandsFile} (brands) and ${M.trendsFile} (category trends)`}),
-      h('dt',{text:`Tab “${M.tab}”`}),h('dd',{text:`${N} brands, 17 columns (range A1:Q${N+1}). This is the list shown in the Brands tab.`}),
-      h('dt',{text:`Tab “${M.trendsTab}”`}),h('dd',{text:`${TRENDS.length} categories with a trend, a summary, a brand count and a source link (range A1:E${TRENDS.length+1}).`})
+      h('dt',{text:`Tab “${M.tab}”`}),h('dd',{text:`${N} brands, 17 columns. This is the list shown in the Brands tab.`}),
+      h('dt',{text:`Tab “${M.trendsTab}”`}),h('dd',{text:`${TRENDS.length} categories for ${M.label}, each with a trend, a summary, a brand count and a source link (the tab holds all regions, with a Region column).`})
     ));
     doc.append(s1);
 
@@ -908,7 +894,6 @@ function createMarket(M){
     root.querySelectorAll('.tabs .tab').forEach(b=>{ const on=b.dataset.view===view; b.classList.toggle('active',on); b.setAttribute('aria-selected',String(on)); });
     if(push) setHash(M.key+(view==='brands'?'':'-'+view));
   }
-  root.querySelectorAll('.tabs .tab').forEach(b=>b.addEventListener('click',()=>{ show(b.dataset.view,true); window.scrollTo(0,0); }));
   initBrands();
   if(M.hasAnalytics) buildAnalytics();
   buildReadme(); buildSources();
@@ -918,15 +903,21 @@ function createMarket(M){
 /* ---------- top level: India / North America ---------- */
 function setHash(name){ try{ history.replaceState(null,'','#'+name); }catch(e){ location.hash=name; } }
 const instances={};
+const VIEWS=[['brands','Brands'],['analytics','Analytics'],['readme','README'],['sources','Sources']];
+let curKey=null, curView='brands';
 function showMarket(key,view,push){
   hideTip();
-  if(!instances[key]) key=Object.keys(instances)[0];
+  if(!instances[key]) key=curKey||Object.keys(instances)[0];
+  if(view!==undefined) curView=VIEWS.some(v=>v[0]===view)?view:'brands';
+  curKey=key;
   Object.keys(instances).forEach(k=>{
     document.getElementById('market-'+k).hidden=k!==key;
-    const b=document.getElementById('mkt-'+k); b.classList.toggle('active',k===key); b.setAttribute('aria-selected',String(k===key));
   });
-  instances[key].show(view||'brands',false);
-  if(push) setHash(key+((view&&view!=='brands')?'-'+view:''));
+  document.getElementById('geoSel').value=key;
+  instances[key].show(curView,false);
+  document.querySelectorAll('#toptabs .tab').forEach(t=>{ const on=t.dataset.view===curView; t.classList.toggle('active',on); t.setAttribute('aria-selected',String(on)); });
+  const bp=document.getElementById('toppill'); if(bp) bp.textContent=String(MARKETS[key].rows.length);
+  if(push) setHash(key+(curView==='brands'?'':'-'+curView));
 }
 function routeFromHash(){
   const parts=(location.hash||'').replace('#','').split('-');
@@ -995,6 +986,35 @@ function showProblem(message,hint){
   document.getElementById('loading').hidden=true;
 }
 
+/* ---------- optional category fixes (category-fixes.csv) ---------- */
+async function applyCategoryFixes(){
+  const notes=[], file=SETTINGS.fixesFile;
+  if(!file) return notes;
+  let res;
+  try{ res=await fetch(file,{cache:'no-store'}); }catch(e){ return notes; }
+  if(!res || !res.ok) return notes;                                   // the file is optional
+  let t; try{ t=cleanTable(parseCsv(await res.text())); }catch(e){ return [`The file “${file}” could not be read, so no category fixes were applied.`]; }
+  const need=['Market','Brand','Category'].filter(c=>!t.header.includes(c));
+  if(need.length) return [`The file “${file}” is missing the columns ${need.join(', ')}, so no category fixes were applied.`];
+  const mi=t.header.indexOf('Market'), bi=t.header.indexOf('Brand'), ci=t.header.indexOf('Category');
+  const moved={}, problems=[];
+  t.body.forEach(f=>{
+    const mk=Object.keys(MARKETS).find(k=>MARKETS[k].label.toLowerCase()===f[mi].toLowerCase()||k===f[mi].toLowerCase());
+    if(!mk){ problems.push(`“${f[bi]}” (unknown market “${f[mi]}”)`); return; }
+    const M=MARKETS[mk], I=n=>M.cols.indexOf(n);
+    const hits=M.rows.filter(r=>r[I('Brand')].toLowerCase()===f[bi].toLowerCase());
+    if(hits.length!==1){ problems.push(`“${f[bi]}” (${hits.length?'more than one match':'not found'} in ${M.label})`); return; }
+    if(!M.rows.some(r=>r[I('Category')]===f[ci])){ problems.push(`“${f[bi]}” (category “${f[ci]}” does not exist in ${M.label})`); return; }
+    const r=hits[0];
+    if(r[I('Category')]===f[ci]) return;
+    M.moved=M.moved||new Map(); if(!M.moved.has(r[I('Brand')])) M.moved.set(r[I('Brand')],r[I('Category')]);
+    r[I('Category')]=f[ci]; moved[mk]=(moved[mk]||0)+1;
+  });
+  Object.keys(moved).forEach(k=>notes.push(`${MARKETS[k].label}: ${moved[k]} ${moved[k]===1?'brand is':'brands are'} shown under a different category than in the Google Sheet, as listed in ${file}. No brand was removed.`));
+  if(problems.length) notes.push(`${file}: ${problems.length} ${problems.length===1?'line was':'lines were'} ignored: ${problems.slice(0,5).join('; ')}${problems.length>5?'…':''}.`);
+  return notes;
+}
+
 /* ---------- start ---------- */
 async function boot(){
   document.title=SETTINGS.pageTitle;
@@ -1009,27 +1029,33 @@ async function boot(){
   const latest=Object.keys(MARKETS).map(k=>MARKETS[k].lastModified).filter(Boolean).sort((x,y)=>y-x)[0];
   if(latest) document.getElementById('page-sub').textContent+=` Data published: ${latest.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}.`;
 
-  const notices=[];
+  const notices=await applyCategoryFixes();
   Object.keys(MARKETS).forEach(k=>{
     const M=MARKETS[k], gi=M.cols.indexOf('Growth signal'), bi=M.cols.indexOf('Brand'), ci=M.cols.indexOf('Category');
     const badGrowth=M.rows.filter(r=>!GROWTH_ORDER.includes(r[gi])).length;
     const noName=M.rows.filter(r=>r[bi]===''||r[ci]==='').length;
-    if(badGrowth) notices.push(`${M.label}: ${badGrowth} ${badGrowth===1?'row has':'rows have'} a Growth signal that is not Growing, Stable, Struggling or Unclear. ${badGrowth===1?'It is':'They are'} shown in the table but not counted in the summary boxes.`);
+    if(badGrowth) notices.push(`${M.label}: ${badGrowth} ${badGrowth===1?'row has':'rows have'} a Growth signal that is not Growing, Stable, Struggling or Unclear. ${badGrowth===1?'It is':'They are'} shown as written in the sheet.`);
     if(noName) notices.push(`${M.label}: ${noName} ${noName===1?'row has':'rows have'} no Brand or no Category in the data file.`);
   });
   const nbox=document.getElementById('notices');
   notices.forEach(n=>nbox.append(h('div',{class:'notice',text:n})));
   nbox.hidden=!notices.length;
 
-  const bar=document.getElementById('markets'), app=document.getElementById('app');
-  Object.keys(MARKETS).forEach(k=>{
+  const app=document.getElementById('app'), sel=document.getElementById('geoSel'), tabsBox=document.getElementById('toptabs');
+  VIEWS.forEach(([v,l])=>{
+    const t=h('button',{class:'tab',role:'tab','data-view':v},l,v==='brands'?h('span',{class:'pill',id:'toppill'}):null);
+    t.addEventListener('click',()=>{ showMarket(curKey,v,true); window.scrollTo(0,0); });
+    tabsBox.append(t);
+  });
+  const keys=Object.keys(MARKETS);
+  keys.forEach(k=>{
     const M=MARKETS[k];
-    const b=h('button',{class:'mkt',role:'tab',id:'mkt-'+k},M.label,h('span',{class:'pill',text:String(M.rows.length)}));
-    b.addEventListener('click',()=>{ showMarket(k,'brands',true); window.scrollTo(0,0); });
-    bar.append(b);
+    sel.append(h('option',{value:k,text:`${M.label} (${M.rows.length})`}));
     app.append(h('div',{id:'market-'+k,hidden:''}));
     instances[k]=createMarket(M);
   });
+  sel.addEventListener('change',e=>showMarket(e.target.value,undefined,true));
+  document.getElementById('geo').hidden=false;
   document.getElementById('loading').hidden=true;
   window.addEventListener('hashchange',routeFromHash);
   routeFromHash();
