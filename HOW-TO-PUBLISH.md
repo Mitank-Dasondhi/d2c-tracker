@@ -52,7 +52,7 @@ Tip for later: protect yourself from losing access. Add a second owner you trust
 
 ## Part 6: Check it works
 
-21. Your page opens in a new tab. You should see the title "D2C Commerce India and NA" and the tabs Brands, Analytics, README and Sources. At the right end of the tab row is a **Geography** drop-down. Below are a search box and a table of brands.
+21. Your page opens in a new tab. You should see the title "D2C Commerce Tracker" with a short description under it and the tabs Brands, Analytics, README and Sources. At the right end of the tab row is a **Geography** drop-down. Below are a search box and a table of brands.
 22. Open the **Geography** drop-down, choose **North America**, then type a brand name into the search box. The table should shrink to match.
 23. If you see a red box, read the message. It names the file and the problem, and README.md explains how to fix it. If you see a plain "404" page, wait another two minutes and try again.
 24. Bookmark the link. To find it again later, go to your repository, click Settings, then Pages.

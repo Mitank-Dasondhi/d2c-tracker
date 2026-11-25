@@ -69,7 +69,7 @@ If you break a rule, the page shows a red message that tells you which file has 
 - The category trends files need these 5 columns: Category, Trend, Summary, Brands in list, Source URL.
 - The first row is the column names. After that, one brand per row, with no empty rows in between.
 - Do not merge cells in the sheet. Do not leave a column name blank.
-- Growth signal must be one of these four words: Growing, Stable, Struggling, Unclear. Any other word is still shown as written. The page shows a yellow note when this happens.
+- Growth signal must be one of these four words: Growing, Stable, Struggling, Unclear. Any other word is still shown as written. The page shows a note about this in the README tab.
 - Keep the file names exactly as written, with small letters.
 - Save as CSV in UTF-8. Google Sheets does this for you. If you use Excel, choose **Save As**, then **CSV UTF-8 (Comma delimited)**.
 
@@ -96,8 +96,8 @@ If you use a free GitHub account, your project and your live link are public. An
 
 ## Changing the words at the top
 
-The first lines inside the `<script>` part of `index.html`, under the heading `SETTINGS`, hold the page title, the Google Sheet name and the data file names. If you rename a data file, change its name there too, or ask Claude to do it for you.
+The first lines inside the `<script>` part of `index.html`, under the heading `SETTINGS`, hold the page title, the short description under it, the Google Sheet name and the data file names. If you rename a data file, change its name there too, or ask Claude to do it for you.
 
 ## Moving a brand to another category (category-fixes.csv)
 
-If a brand is in the wrong category, you can fix it without editing the Google Sheet. Open `category-fixes.csv` and add a line with three things: the market (India or North America), the exact brand name, and the category you want. The category must already exist in that market. Upload the file the same way as the others. The page shows a yellow note saying how many brands were moved, and no brand is ever removed. A line that does not match is ignored and listed in that note. The best long-term fix is still to correct the category in the Google Sheet and download the CSV files again.
+If a brand is in the wrong category, you can fix it without editing the Google Sheet. Open `category-fixes.csv` and add a line with three things: the market (for example India or North America, written exactly as in the Geography drop-down), the exact brand name, and the category you want. The category must already exist in that market. Upload the file the same way as the others. The README tab of each geography has a "Data notes" section saying how many brands were moved, and no brand is ever removed. A line that does not match is ignored and listed in that section. The best long-term fix is still to correct the category in the Google Sheet and download the CSV files again.

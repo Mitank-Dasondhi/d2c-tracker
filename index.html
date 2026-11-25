@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>D2C Commerce India and NA</title>
+<title>D2C Commerce Tracker</title>
 <style>
 /* =====================================================================
    1. DESIGN TOKENS  (the only place colours, fonts and sizes are defined)
@@ -288,7 +288,7 @@ svg.donut text{pointer-events:none}
 </head>
 <body>
 <div class="wrap" id="app">
-  <h1 id="page-title">D2C Commerce India and NA</h1>
+  <h1 id="page-title">D2C Commerce Tracker</h1>
   <div class="sub" id="page-sub"></div>
   <div class="loading" id="loading">Loading data…</div>
   <noscript><div class="problem"><h3>JavaScript is turned off</h3><p>This page needs JavaScript to show the data. Turn it on in your browser settings and reload.</p></div></noscript>
@@ -306,7 +306,8 @@ svg.donut text{pointer-events:none}
    Everything else on this page is read from the CSV data files.
    ===================================================================== */
 const SETTINGS={
-  pageTitle:'D2C Commerce India and NA',   // big title at the top of the page
+  pageTitle:'D2C Commerce Tracker',        // big title at the top of the page
+  description:'A list and analysis of direct-to-consumer and e-commerce companies across {geographies}. Browse the brands by category, city and headcount, open any brand’s website, and see how each geography breaks down in Analytics.',   // short text under the title; {geographies} is filled in from the markets below
   sheetTitle:'D2C Commerce India and NA',  // name of your Google Sheet (shown in the Sources tab)
   fixesFile:'category-fixes.csv',          // optional: moves a brand to a different existing category (see README.md)
   sheetUrl:'',                             // optional link to your Google Sheet. Leave empty to keep the sheet private.
@@ -750,6 +751,13 @@ function createMarket(M){
       h('p',{text:'Use the Brands tab to search and filter. Click any brand row to see all 17 fields recorded for it.'})
     );
     doc.append(about);
+    const mine=PAGE_NOTES.filter(n=>!Object.values(MARKETS).some(x=>x.label!==M.label && n.startsWith(x.label+':')));
+    if(mine.length){
+      const ns=section('Data notes','Things worth knowing about how this list is shown.');
+      mine.forEach(n=>ns.append(h('p',{text:n})));
+      ns.append(h('p',{text:`To see which brands were moved and where, open ${SETTINGS.fixesFile} in the project files. A moved brand’s row details also show the category it has in the Google Sheet.`}));
+      doc.append(ns);
+    }
 
     const gs=section('What “Growing”, “Stable”, “Struggling” and “Unclear” mean','The Growth signal column has exactly four values. Each one is backed by the text in the Signal reason column of the same row.');
     gs.append(h('div',{class:'note',text:'These labels are copied from the sheet. This page does not add its own rules or thresholds. The evidence for each label is the Signal reason text in the same row; open “Show all” on a card to read every one.'}));
@@ -1015,19 +1023,19 @@ async function applyCategoryFixes(){
   return notes;
 }
 
+const PAGE_NOTES=[];
 /* ---------- start ---------- */
 async function boot(){
   document.title=SETTINGS.pageTitle;
   document.getElementById('page-title').textContent=SETTINGS.pageTitle;
-  document.getElementById('page-sub').textContent=`Source: Google Sheet “${SHEET_TITLE}”. Every value is shown as written in the sheet.`;
+  const gl=SETTINGS.markets.map(m=>m.label), geoText=gl.length>1?gl.slice(0,-1).join(', ')+' and '+gl[gl.length-1]:gl.join('');
+  document.getElementById('page-sub').textContent=SETTINGS.description.replace('{geographies}',geoText);
   if(location.protocol==='file:'){
     showProblem('This page cannot read its data files when it is opened by double-clicking it on your computer. Open it from its web link instead (your GitHub Pages link).','Publish the project on GitHub Pages, then open your link. README.md explains how.');
     return;
   }
   try{ await Promise.all(Object.keys(MARKETS).map(k=>loadMarketData(MARKETS[k]))); }
   catch(e){ showProblem(e.message); return; }
-  const latest=Object.keys(MARKETS).map(k=>MARKETS[k].lastModified).filter(Boolean).sort((x,y)=>y-x)[0];
-  if(latest) document.getElementById('page-sub').textContent+=` Data published: ${latest.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}.`;
 
   const notices=await applyCategoryFixes();
   Object.keys(MARKETS).forEach(k=>{
@@ -1037,9 +1045,7 @@ async function boot(){
     if(badGrowth) notices.push(`${M.label}: ${badGrowth} ${badGrowth===1?'row has':'rows have'} a Growth signal that is not Growing, Stable, Struggling or Unclear. ${badGrowth===1?'It is':'They are'} shown as written in the sheet.`);
     if(noName) notices.push(`${M.label}: ${noName} ${noName===1?'row has':'rows have'} no Brand or no Category in the data file.`);
   });
-  const nbox=document.getElementById('notices');
-  notices.forEach(n=>nbox.append(h('div',{class:'notice',text:n})));
-  nbox.hidden=!notices.length;
+  PAGE_NOTES.push(...notices);   // shown in the README tab, not at the top of the page
 
   const app=document.getElementById('app'), sel=document.getElementById('geoSel'), tabsBox=document.getElementById('toptabs');
   VIEWS.forEach(([v,l])=>{

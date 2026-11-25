@@ -31,10 +31,10 @@ The sheet has one trends tab for all regions with a Region column; it is split i
 - README tab: what the growth labels mean (shown only with counts, examples and each brand's own reason from the data), a guide to every column, and the terms used in the data.
 - Sources tab: where the data comes from, the source links grouped by website, the category trends with their summaries, and how recent the evidence is.
 - Light colours only (no dark mode), one system font, and a shared design standard that is used by my other sites too. The colours and sizes are defined once in the CSS at the top of the file, and charts follow fixed colour rules (charts use blue, orange, green, yellow, purple, red, teal, pink in that order; Other is grey). Hovering over tiles, column headings, status badges, chart bars, pie slices, legend rows and links shows a small white information box. It works on phones.
-- The words at the top (page title, sheet name, file names) are in a SETTINGS block at the start of the script.
+- The words at the top (page title, the short description under it, sheet name, file names) are in a SETTINGS block at the start of the script.
 
 **category-fixes.csv (optional)**
-Three columns: Market (India or North America), Brand, Category. A line moves that brand to a different category that already exists in the same market, without changing the Google Sheet or the four data files and without removing any brand. The page shows a yellow note with how many brands were moved, and the brand's row details show the category it has in the sheet. A line that does not match (wrong brand name or a category that does not exist) is ignored and listed in the note. The proper long-term fix is to correct the category in the Google Sheet and export the CSVs again.
+Three columns: Market (written exactly as in the Geography drop-down), Brand, Category. A line moves that brand to a different category that already exists in the same market, without changing the Google Sheet or the four data files and without removing any brand. The README tab shows a "Data notes" section with how many brands were moved (never a warning box at the top of the page), and the brand's row details show the category it has in the sheet. A line that does not match (wrong brand name or a category that does not exist) is ignored and listed in the note. The proper long-term fix is to correct the category in the Google Sheet and export the CSVs again.
 
 **How I will give you work**
 I will tell you what I want to change in plain words. Please:
