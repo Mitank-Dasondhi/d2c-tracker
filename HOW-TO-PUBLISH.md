@@ -61,14 +61,8 @@ Do not open `index.html` by double-clicking it on your computer. Browsers block 
 
 ## Part 7: Update the data later
 
-25. Update your Google Sheet. Click the tab you changed, then click **File**, **Download**, **Comma Separated Values (.csv)**. This downloads only the tab you are looking at.
-26. Rename the downloaded file to its exact name:
-    - Brands tab: `data-india.csv`
-    - Brands - Oceania, Brands - Southeast Asia and Brands - South Africa tabs: `data-oceania.csv`, `data-southeast-asia.csv`, `data-south-africa.csv`
-    - The Category trends tab now holds every geography in one tab. Easiest: attach the new Excel file to Claude and ask it to split it into the five trends files.
-    - Category trends tab: `data-india-trends.csv`
-    - Brands - North America tab: `data-north-america.csv`
-    - Category trends - NA tab: `data-north-america-trends.csv`
+25. Update your Google Sheet. Click the tab "D2C brands all regions", then click **File**, **Download**, **Comma Separated Values (.csv)**. This downloads only the tab you are looking at.
+26. Rename the downloaded file to `data-brands.csv`. Do the same with the tab "Category trends (all regions)" and rename it to `data-trends.csv`.
 27. Go to your repository on GitHub. Click **Add file**, then **Upload files**. Drag in the new CSV files. Files with the same name replace the old ones.
 28. Click the green **Commit changes** button. Wait one to two minutes, then open your live link and press Ctrl + Shift + R (Windows) or Cmd + Shift + R (Mac). You should see the new brand counts in the Geography drop-down.
 

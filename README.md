@@ -11,20 +11,15 @@ You can:
 - see charts and numbers on the Analytics tab
 - read what each word means on the README tab, and where each fact came from on the Sources tab
 
-The page does not keep any brand information inside itself. It reads everything from the four data files listed below. To change the information, you only change those files.
+The page does not keep any brand information inside itself. It reads everything from the two data files listed below. To change the information, you only change those files.
 
 ## What is in this project
 
 | File | What it is |
 |---|---|
 | `index.html` | The web page itself. You normally never touch this. |
-| `data-india.csv` | The India brands list (one row per brand). |
-| `data-india-trends.csv` | The India category trends (one row per category). |
-| `data-north-america.csv` | The North America brands list. |
-| `data-north-america-trends.csv` | The North America category trends. |
-| `data-oceania.csv` and `data-oceania-trends.csv` | The Oceania brands list and category trends. |
-| `data-southeast-asia.csv` and `data-southeast-asia-trends.csv` | The Southeast Asia brands list and category trends. |
-| `data-south-africa.csv` and `data-south-africa-trends.csv` | The South Africa brands list and category trends. |
+| `data-brands.csv` | All brands for every geography in one file (one row per brand). The Region column says which geography a brand belongs to. |
+| `data-trends.csv` | The category trends for every geography in one file (one row per category, with a Region column). |
 | `category-fixes.csv` | Optional. Moves a brand to a different category without touching the sheet (see below). |
 | `README.md` | This file. |
 | `NEXT-TIME-PROMPT.md` | Text you can give to a new Claude or Grok to keep improving this project. |
@@ -32,18 +27,14 @@ The page does not keep any brand information inside itself. It reads everything 
 
 ## Where the data came from
 
-All the data came from one Google Sheet called "D2C Commerce India and NA". It has four tabs, and each tab became one data file:
+All the data came from one Google Sheet. Two of its tabs became the two data files:
 
 | Google Sheet tab | Data file |
 |---|---|
-| Brands | `data-india.csv` |
-| Category trends | `data-india-trends.csv` |
-| Brands - North America | `data-north-america.csv` |
-| Category trends - NA | `data-north-america-trends.csv` |
-| Brands - Oceania | `data-oceania.csv` |
-| Brands - Southeast Asia | `data-southeast-asia.csv` |
-| Brands - South Africa | `data-south-africa.csv` |
-| Category trends (all regions) | One tab for every geography, with a Region column. It must be split into `data-india-trends.csv`, `data-north-america-trends.csv`, `data-oceania-trends.csv`, `data-southeast-asia-trends.csv` and `data-south-africa-trends.csv`, one per Region, keeping only the five columns Category, Trend, Summary, Brands in list, Source URL. The easiest way is to give the new Excel file to Claude and ask it to do this. |
+| D2C brands all regions | `data-brands.csv` |
+| Category trends (all regions) | `data-trends.csv` |
+
+The page makes one geography for every different word in the Region column, so a new geography needs no change to the page. Only the data files change.
 
 Nothing was added, shortened or changed. Every row and every column from the sheet is in these files. The page shows the values exactly as they are written in the sheet.
 
@@ -52,14 +43,11 @@ Nothing was added, shortened or changed. Every row and every column from the she
 You will do this every few months.
 
 1. Open your Google Sheet and update it as usual.
-2. Click the tab you changed (at the bottom of the sheet).
-3. Click **File**, then **Download**, then **Comma Separated Values (.csv)**. This downloads only the tab you are looking at.
-4. Rename the downloaded file to the exact name from the table above. For example, the "Brands" tab must be named `data-india.csv`.
-5. Repeat for each tab you changed.
-6. Go to your project on GitHub. Click **Add file**, then **Upload files**.
-7. Drag the new CSV files into the box. Files with the same name replace the old ones.
-8. Scroll down and click **Commit changes**.
-9. Wait one or two minutes. Then open your live page and refresh it. If you still see old numbers, press Ctrl + Shift + R (Windows) or Cmd + Shift + R (Mac).
+2. Click the tab "D2C brands all regions", then **File**, **Download**, **Comma Separated Values (.csv)**. Rename the downloaded file to `data-brands.csv`.
+3. Do the same for the tab "Category trends (all regions)" and rename it to `data-trends.csv`.
+4. Upload the two files to GitHub (HOW-TO-PUBLISH.md, Part 7). Files with the same name replace the old ones.
+
+The first row of each file must keep the column names exactly as they are. `data-brands.csv` starts with Region, Global S.No, Regional S.No, Brand, Category and so on. `data-trends.csv` starts with Region, Category, Trend, Summary, Brands in list, Source URL.
 
 ## Rules for the data files
 

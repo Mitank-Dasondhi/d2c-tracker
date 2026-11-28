@@ -311,23 +311,11 @@ const SETTINGS={
   sheetTitle:'D2C Commerce India and NA',  // name of your Google Sheet (shown in the Sources tab)
   fixesFile:'category-fixes.csv',          // optional: moves a brand to a different existing category (see README.md)
   sheetUrl:'',                             // optional link to your Google Sheet. Leave empty to keep the sheet private.
-  markets:[
-    { key:'india', label:'India',
-      brandsFile:'data-india.csv', trendsFile:'data-india-trends.csv',
-      brandsTab:'Brands', trendsTab:'Category trends (all regions)' },
-    { key:'na', label:'North America',
-      brandsFile:'data-north-america.csv', trendsFile:'data-north-america-trends.csv',
-      brandsTab:'Brands - North America', trendsTab:'Category trends (all regions)' },
-    { key:'oceania', label:'Oceania',
-      brandsFile:'data-oceania.csv', trendsFile:'data-oceania-trends.csv',
-      brandsTab:'Brands - Oceania', trendsTab:'Category trends (all regions)' },
-    { key:'sea', label:'Southeast Asia',
-      brandsFile:'data-southeast-asia.csv', trendsFile:'data-southeast-asia-trends.csv',
-      brandsTab:'Brands - Southeast Asia', trendsTab:'Category trends (all regions)' },
-    { key:'za', label:'South Africa',
-      brandsFile:'data-south-africa.csv', trendsFile:'data-south-africa-trends.csv',
-      brandsTab:'Brands - South Africa', trendsTab:'Category trends (all regions)' }
-  ]
+  brandsFile:'data-brands.csv',            // the "D2C brands all regions" sheet saved as CSV (one file for every geography)
+  trendsFile:'data-trends.csv',            // the "Category trends (all regions)" sheet saved as CSV
+  brandsTab:'D2C brands all regions',      // tab names, only used in the wording on the page
+  trendsTab:'Category trends (all regions)',
+  regionOrder:['India','North America','Oceania','Southeast Asia','South Africa','Middle East','UK & Europe']   // order in the Geography drop-down; new geographies are added after these automatically
 };
 const SHEET_TITLE=SETTINGS.sheetTitle;
 const SHEET_URL=SETTINGS.sheetUrl;
@@ -405,8 +393,7 @@ function bars(entries,total,onClick,boxed){
 }
 
 /* ---------- per-market config (wording that depends on what the sheet says) ---------- */
-const MARKETS={};
-SETTINGS.markets.forEach(m=>{ MARKETS[m.key]={key:m.key,label:m.label,tab:m.brandsTab,trendsTab:m.trendsTab,hasAnalytics:true,brandsFile:m.brandsFile,trendsFile:m.trendsFile}; });
+const MARKETS={};   // filled from the Region column of the data files
 
 const TERMS=[['D2C',/D2C/],['DTC',/\bDTC\b/],['Omnichannel',/Omnichannel/],['Quick-commerce',/quick-commerce/i],['Modern trade',/modern trade/i],['General trade',/general trade/i],['Wholesale',/wholesale/i],['Subscription',/subscription/i],['COCO',/COCO/],['Technographics',/technographics/i],['Apollo range',/Apollo range/],['Fiscal-year labels (FY25, FY2025 …)',/\bFY\d{2,4}\b/],['Quarter labels (Q1 FY27, Q4 …)',/\bQ\d\b/],['YoY',/YoY/],['Cr',/₹[\d,.]+\s?Cr/],['Mn',/\$[\d.]+\s?Mn/],['$ amounts with M or B',/\$[\d.,]+\s?[MB]\b/],['PAT',/\bPAT\b/],['PBT',/\bPBT\b/],['EBITDA',/EBITDA/],['Operating profit',/operating profit/i],['Operating margin',/operating margin/i],['ARR',/\bARR\b/],['GMV',/\bGMV\b/],['Down round',/down ?round/i],['Series A–D',/Series [A-D]\b/],['NYSE',/NYSE/],['NASDAQ',/NASDAQ/],['TSX',/TSX/]];
 
@@ -971,16 +958,32 @@ function needColumns(file,header,required){
   const missing=required.filter(c=>!header.includes(c));
   if(missing.length) throw new Error(`The file “${file}” is missing these columns: ${missing.join(', ')}. The column names in the first row must match exactly (see README.md).`);
 }
-async function loadMarketData(M){
-  const [b,tr]=await Promise.all([loadTable(M.brandsFile),loadTable(M.trendsFile)]);
-  needColumns(M.brandsFile,b.header,REQUIRED_BRAND_COLS);
-  needColumns(M.trendsFile,tr.header,REQUIRED_TREND_COLS);
-  const fix=['S.No','Founded year'].map(n=>b.header.indexOf(n));
-  b.body.forEach(r=>fix.forEach(i=>{ r[i]=r[i].replace(/^(\d+)\.0+$/,'$1'); }));   // 2016.0 becomes 2016
-  const ti=REQUIRED_TREND_COLS.map(n=>tr.header.indexOf(n));
-  M.cols=b.header; M.rows=b.body;
-  M.trends=tr.body.map(r=>ti.map(i=>r[i]));
-  M.lastModified=[b.lastModified,tr.lastModified].filter(Boolean).map(s=>new Date(s)).filter(d=>!isNaN(d)).sort((x,y)=>y-x)[0]||null;
+const LOAD_NOTES=[];
+const slug=t=>t.toLowerCase().replace(/[^a-z0-9]/g,'');
+async function loadAll(){
+  const [b,tr]=await Promise.all([loadTable(SETTINGS.brandsFile),loadTable(SETTINGS.trendsFile)]);
+  needColumns(SETTINGS.brandsFile,b.header,['Region','Regional S.No',...REQUIRED_BRAND_COLS.filter(c=>c!=='S.No')]);
+  needColumns(SETTINGS.trendsFile,tr.header,['Region',...REQUIRED_TREND_COLS]);
+  const ri=b.header.indexOf('Region');
+  const keep=b.header.map((c,i)=>i).filter(i=>b.header[i]!=='Region'&&b.header[i]!=='Global S.No');
+  const cols=keep.map(i=>b.header[i]==='Regional S.No'?'S.No':b.header[i]);
+  const noRegion=b.body.filter(r=>r[ri]==='').length;
+  if(noRegion) LOAD_NOTES.push(`${noRegion} ${noRegion===1?'row has':'rows have'} no Region in ${SETTINGS.brandsFile} and ${noRegion===1?'is':'are'} not shown.`);
+  const order=SETTINGS.regionOrder||[];
+  const regions=[...new Set(b.body.map(r=>r[ri]).filter(Boolean))].sort((x,y)=>{ const p=order.indexOf(x), q=order.indexOf(y); return (p<0?999:p)-(q<0?999:q); });
+  const tri=REQUIRED_TREND_COLS.map(n=>tr.header.indexOf(n)), tri0=tr.header.indexOf('Region');
+  regions.forEach(label=>{
+    const rows=b.body.filter(r=>r[ri]===label).map(r=>{
+      const x=keep.map(i=>r[i]);
+      ['S.No','Founded year'].forEach(n=>{ const j=cols.indexOf(n); x[j]=x[j].replace(/^(\d+)\.0+$/,'$1'); });   // 2016.0 becomes 2016
+      return x;
+    });
+    MARKETS[slug(label)]={key:slug(label),label,tab:SETTINGS.brandsTab,trendsTab:SETTINGS.trendsTab,hasAnalytics:true,brandsFile:SETTINGS.brandsFile,trendsFile:SETTINGS.trendsFile,
+      cols,rows,trends:tr.body.filter(r=>r[tri0]===label).map(r=>tri.map(i=>r[i]))};
+  });
+  const known=new Set(regions), lost=[...new Set(tr.body.map(r=>r[tri0]).filter(x=>x&&!known.has(x)))];
+  if(lost.length) LOAD_NOTES.push(`${SETTINGS.trendsFile} has trends for ${lost.join(', ')}, which has no brands in ${SETTINGS.brandsFile}, so it is not shown.`);
+  if(!regions.length) throw new Error(`The file “${SETTINGS.brandsFile}” has no rows with a Region.`);
 }
 function showProblem(message,hint){
   const box=document.getElementById('problem');
@@ -1028,16 +1031,16 @@ const PAGE_NOTES=[];
 async function boot(){
   document.title=SETTINGS.pageTitle;
   document.getElementById('page-title').textContent=SETTINGS.pageTitle;
-  const gl=SETTINGS.markets.map(m=>m.label), geoText=gl.length>1?gl.slice(0,-1).join(', ')+' and '+gl[gl.length-1]:gl.join('');
-  document.getElementById('page-sub').textContent=SETTINGS.description.replace('{geographies}',geoText);
   if(location.protocol==='file:'){
     showProblem('This page cannot read its data files when it is opened by double-clicking it on your computer. Open it from its web link instead (your GitHub Pages link).','Publish the project on GitHub Pages, then open your link. README.md explains how.');
     return;
   }
-  try{ await Promise.all(Object.keys(MARKETS).map(k=>loadMarketData(MARKETS[k]))); }
+  try{ await loadAll(); }
   catch(e){ showProblem(e.message); return; }
 
-  const notices=await applyCategoryFixes();
+  const gl=Object.values(MARKETS).map(m=>m.label), geoText=gl.length>1?gl.slice(0,-1).join(', ')+' and '+gl[gl.length-1]:gl.join('');
+  document.getElementById('page-sub').textContent=SETTINGS.description.replace('{geographies}',geoText);
+  const notices=[...LOAD_NOTES,...await applyCategoryFixes()];
   Object.keys(MARKETS).forEach(k=>{
     const M=MARKETS[k], gi=M.cols.indexOf('Growth signal'), bi=M.cols.indexOf('Brand'), ci=M.cols.indexOf('Category');
     const badGrowth=M.rows.filter(r=>!GROWTH_ORDER.includes(r[gi])).length;
